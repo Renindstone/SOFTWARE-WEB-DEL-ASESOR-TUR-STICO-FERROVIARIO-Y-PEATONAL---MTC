@@ -1,3 +1,4 @@
+
 -- ============================================================================
 -- Proyecto : Asesor Turistico Ferroviario y Peatonal - MTC
 -- Curso    : Ingenieria de Software - UNU
@@ -11,7 +12,7 @@
 -- normalizado de 3-4 letras exigido por la catedra, entre comillas dobles
 -- para preservar el uso de mayusculas en PostgreSQL.
 -- ============================================================================
-
+ 
 -- ----------------------------------------------------------------------------
 -- 1. ROL  (seguridad)
 -- ----------------------------------------------------------------------------
@@ -21,7 +22,7 @@ CREATE TABLE rol (
     CONSTRAINT pk_rol            PRIMARY KEY ("RolIdRol"),
     CONSTRAINT uq_rol_nombre     UNIQUE ("RolNombreRol")
 );
-
+ 
 -- ----------------------------------------------------------------------------
 -- 2. USUARIO  (seguridad)
 -- ----------------------------------------------------------------------------
@@ -41,7 +42,7 @@ CREATE TABLE usuario (
         REFERENCES rol ("RolIdRol") ON DELETE RESTRICT,
     CONSTRAINT ck_usuario_estado CHECK ("UsuEstado" IN ('Activo', 'Inactivo'))
 );
-
+ 
 -- ----------------------------------------------------------------------------
 -- 3. TIPO_TURISMO  (parametrica - RNF-06 Escalabilidad)
 -- ----------------------------------------------------------------------------
@@ -52,7 +53,7 @@ CREATE TABLE tipo_turismo (
     CONSTRAINT pk_tipo_turismo    PRIMARY KEY ("TipIdTipoTurismo"),
     CONSTRAINT uq_tipo_nombre     UNIQUE ("TipNombre")
 );
-
+ 
 -- ----------------------------------------------------------------------------
 -- 4. ESTACION  (nucleo - fuente PeruRail)
 -- ----------------------------------------------------------------------------
@@ -69,7 +70,7 @@ CREATE TABLE estacion (
     CONSTRAINT uq_estacion_codigo  UNIQUE ("EstCodigo"),
     CONSTRAINT ck_estacion_estado  CHECK ("EstEstado" IN ('Activa', 'Inactiva'))
 );
-
+ 
 -- ----------------------------------------------------------------------------
 -- 5. SERVICIO_TREN  (integracion PeruRail)
 -- ----------------------------------------------------------------------------
@@ -89,31 +90,54 @@ CREATE TABLE servicio_tren (
     CONSTRAINT ck_servicio_tiempo      CHECK ("SerTiempoTransitoMin" > 0),
     CONSTRAINT ck_servicio_tarifa      CHECK ("SerTarifa" >= 0)
 );
-
+ 
 -- ----------------------------------------------------------------------------
 -- 6. ZONA_TURISTICA  (fuente Travel Group Peru)
+--
+-- NOTA: la columna "ZonIdTipoTurismo" fue retirada de esta tabla. La
+-- categorizacion turistica pasa a resolverse mediante la tabla intermedia
+-- zona_tipo_turismo (punto 7), ya que una misma zona puede pertenecer a mas
+-- de una categoria a la vez (relacion N:M).
 -- ----------------------------------------------------------------------------
 CREATE TABLE zona_turistica (
     "ZonIdZona"             INTEGER GENERATED ALWAYS AS IDENTITY,
     "ZonNombre"             VARCHAR(100)   NOT NULL,
     "ZonDescripcion"        VARCHAR(500)   NULL,
-    "ZonIdTipoTurismo"      INTEGER        NOT NULL,
     "ZonIdEstacionCercana"  INTEGER        NOT NULL,
     "ZonCostoAprox"         NUMERIC(7,2)   NULL,
     "ZonCupoMaximoDiario"   INTEGER        NULL,
     "ZonEstado"             VARCHAR(10)    NOT NULL DEFAULT 'Activa',
     CONSTRAINT pk_zona_turistica    PRIMARY KEY ("ZonIdZona"),
-    CONSTRAINT fk_zona_tipo         FOREIGN KEY ("ZonIdTipoTurismo")
-        REFERENCES tipo_turismo ("TipIdTipoTurismo") ON DELETE RESTRICT,
     CONSTRAINT fk_zona_estacion     FOREIGN KEY ("ZonIdEstacionCercana")
         REFERENCES estacion ("EstIdEstacion") ON DELETE RESTRICT,
     CONSTRAINT ck_zona_estado       CHECK ("ZonEstado" IN ('Activa', 'Inactiva')),
     CONSTRAINT ck_zona_cupo         CHECK ("ZonCupoMaximoDiario" IS NULL
                                            OR "ZonCupoMaximoDiario" > 0)
 );
-
+ 
 -- ----------------------------------------------------------------------------
--- 7. RUTA_PEATONAL  (motor de rutas - RNF-04 circuito cerrado)
+-- 7. ZONA_TIPO_TURISMO  (tabla intermedia N:M)
+--
+-- Resuelve la relacion muchos a muchos entre zona_turistica y tipo_turismo.
+-- Ejemplo: la Fortaleza de Ollantaytambo puede clasificarse simultaneamente
+-- como "Historia/Cultura" y como "Naturaleza", y debe aparecer en las
+-- busquedas de ambas preferencias (RF-03).
+-- ----------------------------------------------------------------------------
+CREATE TABLE zona_tipo_turismo (
+    "ZtiIdZonaTipo"        INTEGER GENERATED ALWAYS AS IDENTITY,
+    "ZtiIdZonaTuristica"   INTEGER   NOT NULL,
+    "ZtiIdTipoTurismo"     INTEGER   NOT NULL,
+    CONSTRAINT pk_zona_tipo_turismo    PRIMARY KEY ("ZtiIdZonaTipo"),
+    CONSTRAINT fk_zti_zona             FOREIGN KEY ("ZtiIdZonaTuristica")
+        REFERENCES zona_turistica ("ZonIdZona") ON DELETE CASCADE,
+    CONSTRAINT fk_zti_tipo             FOREIGN KEY ("ZtiIdTipoTurismo")
+        REFERENCES tipo_turismo ("TipIdTipoTurismo") ON DELETE RESTRICT,
+    CONSTRAINT uq_zti_zona_tipo        UNIQUE ("ZtiIdZonaTuristica",
+                                               "ZtiIdTipoTurismo")
+);
+ 
+-- ----------------------------------------------------------------------------
+-- 8. RUTA_PEATONAL  (motor de rutas - RNF-04 circuito cerrado)
 -- ----------------------------------------------------------------------------
 CREATE TABLE ruta_peatonal (
     "RutIdRuta"              INTEGER GENERATED ALWAYS AS IDENTITY,
@@ -134,9 +158,9 @@ CREATE TABLE ruta_peatonal (
     CONSTRAINT ck_ruta_distancia     CHECK ("RutDistanciaKm" > 0),
     CONSTRAINT ck_ruta_tiempo        CHECK ("RutTiempoEstimadoMin" > 0)
 );
-
+ 
 -- ----------------------------------------------------------------------------
--- 8. PREVISION_CLIMA  (integracion SENAMHI)
+-- 9. PREVISION_CLIMA  (integracion SENAMHI)
 -- ----------------------------------------------------------------------------
 CREATE TABLE prevision_clima (
     "CliIdClima"              INTEGER GENERATED ALWAYS AS IDENTITY,
@@ -151,9 +175,9 @@ CREATE TABLE prevision_clima (
     CONSTRAINT ck_clima_lluvia       CHECK ("CliProbabilidadLluvia" BETWEEN 0 AND 100),
     CONSTRAINT uq_clima_est_fecha    UNIQUE ("CliIdEstacion", "CliFecha")
 );
-
+ 
 -- ----------------------------------------------------------------------------
--- 9. INFORME_PLANIFICACION  (modulo de informes)
+-- 10. INFORME_PLANIFICACION  (modulo de informes)
 -- ----------------------------------------------------------------------------
 CREATE TABLE informe_planificacion (
     "InfIdInforme"       INTEGER GENERATED ALWAYS AS IDENTITY,
@@ -171,9 +195,9 @@ CREATE TABLE informe_planificacion (
         REFERENCES ruta_peatonal ("RutIdRuta") ON DELETE RESTRICT,
     CONSTRAINT ck_informe_total      CHECK ("InfTotalEstimado" >= 0)
 );
-
+ 
 -- ----------------------------------------------------------------------------
--- 10. CONTROL_AFORO  (RF-16 / RNF-08 concurrencia)
+-- 11. CONTROL_AFORO  (RF-16 / RNF-08 concurrencia)
 -- ----------------------------------------------------------------------------
 CREATE TABLE control_aforo (
     "AfoIdAforo"         INTEGER GENERATED ALWAYS AS IDENTITY,
@@ -186,9 +210,9 @@ CREATE TABLE control_aforo (
     CONSTRAINT uq_aforo_zona_fecha   UNIQUE ("AfoIdZona", "AfoFecha"),
     CONSTRAINT ck_aforo_cupo         CHECK ("AfoCupoUtilizado" >= 0)
 );
-
+ 
 -- ----------------------------------------------------------------------------
--- 11. AUDITORIA_LOG  (RNF-07 trazabilidad; sin FK fisica)
+-- 12. AUDITORIA_LOG  (RNF-07 trazabilidad; sin FK fisica)
 -- ----------------------------------------------------------------------------
 CREATE TABLE auditoria_log (
     "AudIdLog"           INTEGER GENERATED ALWAYS AS IDENTITY,
@@ -202,16 +226,18 @@ CREATE TABLE auditoria_log (
     CONSTRAINT ck_auditoria_operacion CHECK ("AudOperacion" IN
         ('INSERT', 'UPDATE', 'DELETE', 'SYNC'))
 );
-
+ 
 -- ============================================================================
 -- INDICES  (soporte al RNF-01: tiempo de respuesta menor a 2 segundos)
 -- ============================================================================
-CREATE INDEX idx_zona_estacion      ON zona_turistica ("ZonIdEstacionCercana");
-CREATE INDEX idx_servicio_origen    ON servicio_tren   ("SerIdEstacionOrigen");
-CREATE INDEX idx_servicio_destino   ON servicio_tren   ("SerIdEstacionDestino");
-CREATE INDEX idx_ruta_estacion      ON ruta_peatonal   ("RutIdEstacionOrigen");
-CREATE INDEX idx_ruta_zona          ON ruta_peatonal   ("RutIdZonaDestino");
-CREATE INDEX idx_clima_estacion     ON prevision_clima ("CliIdEstacion");
-CREATE INDEX idx_clima_fecha        ON prevision_clima ("CliFecha");
-CREATE INDEX idx_auditoria_fecha    ON auditoria_log   ("AudFecha");
-CREATE INDEX idx_aforo_zona_fecha   ON control_aforo   ("AfoIdZona", "AfoFecha");
+CREATE INDEX idx_zona_estacion      ON zona_turistica    ("ZonIdEstacionCercana");
+CREATE INDEX idx_zti_zona           ON zona_tipo_turismo ("ZtiIdZonaTuristica");
+CREATE INDEX idx_zti_tipo           ON zona_tipo_turismo ("ZtiIdTipoTurismo");
+CREATE INDEX idx_servicio_origen    ON servicio_tren     ("SerIdEstacionOrigen");
+CREATE INDEX idx_servicio_destino   ON servicio_tren     ("SerIdEstacionDestino");
+CREATE INDEX idx_ruta_estacion      ON ruta_peatonal     ("RutIdEstacionOrigen");
+CREATE INDEX idx_ruta_zona          ON ruta_peatonal     ("RutIdZonaDestino");
+CREATE INDEX idx_clima_estacion     ON prevision_clima   ("CliIdEstacion");
+CREATE INDEX idx_clima_fecha        ON prevision_clima   ("CliFecha");
+CREATE INDEX idx_auditoria_fecha    ON auditoria_log     ("AudFecha");
+CREATE INDEX idx_aforo_zona_fecha   ON control_aforo     ("AfoIdZona", "AfoFecha");
