@@ -35,6 +35,7 @@ SELECT
     e."EstCiudad"                                       AS ciudad,
     string_agg(DISTINCT t."TipNombre", ' + '
                ORDER BY t."TipNombre")                  AS tipos_turismo,
+    r."RutDescripcion"                                   AS descripcion_ruta,
     r."RutDistanciaKm"                                  AS km_ida_vuelta,
     r."RutTiempoEstimadoMin"                            AS minutos,
     r."RutDificultad"                                   AS dificultad,
@@ -47,7 +48,7 @@ LEFT JOIN zona_tipo_turismo zt ON zt."ZtiIdZonaTuristica" = z."ZonIdZona"
 LEFT JOIN tipo_turismo t   ON t."TipIdTipoTurismo" = zt."ZtiIdTipoTurismo"
 LEFT JOIN ruta_peatonal r  ON r."RutIdZonaDestino" = z."ZonIdZona"
 GROUP BY z."ZonIdZona", z."ZonNombre", e."EstNombre", e."EstCiudad",
-         r."RutDistanciaKm", r."RutTiempoEstimadoMin", r."RutDificultad",
+         r."RutDescripcion", r."RutDistanciaKm", r."RutTiempoEstimadoMin", r."RutDificultad",
          z."ZonCostoAprox", z."ZonCupoMaximoDiario", z."ZonEstado";
 
 
@@ -78,7 +79,8 @@ SELECT
     c."CliFecha"               AS fecha,
     e."EstNombre"              AS estacion,
     e."EstCiudad"              AS ciudad,
-    c."CliTemperaturaC"        AS temperatura_c,
+    c."CliTemperaturaMinimaC"  AS temperatura_min_c,
+    c."CliTemperaturaMaximaC"  AS temperatura_max_c,
     c."CliProbabilidadLluvia"  AS prob_lluvia_pct,
     c."CliEstadoClima"         AS estado_clima
 FROM prevision_clima c
@@ -185,17 +187,19 @@ CREATE OR REPLACE FUNCTION fn_buscar_zonas(
     p_tipo            VARCHAR DEFAULT NULL,
     p_dificultad      VARCHAR DEFAULT NULL
 ) RETURNS TABLE (
-    zona           VARCHAR,
-    tipos_turismo  TEXT,
-    km_ida_vuelta  NUMERIC,
-    minutos        INTEGER,
-    dificultad     VARCHAR,
-    costo_zona     NUMERIC
+    zona            VARCHAR,
+    tipos_turismo   TEXT,
+    descripcion_ruta VARCHAR,
+    km_ida_vuelta   NUMERIC,
+    minutos         INTEGER,
+    dificultad      VARCHAR,
+    costo_zona      NUMERIC
 ) AS $$
 BEGIN
     RETURN QUERY
     SELECT z."ZonNombre",
            string_agg(DISTINCT t2."TipNombre", ' + ' ORDER BY t2."TipNombre"),
+           r."RutDescripcion",
            r."RutDistanciaKm",
            r."RutTiempoEstimadoMin",
            r."RutDificultad",
@@ -215,7 +219,7 @@ BEGIN
             JOIN tipo_turismo t3 ON t3."TipIdTipoTurismo" = zt2."ZtiIdTipoTurismo"
             WHERE zt2."ZtiIdZonaTuristica" = z."ZonIdZona"
               AND t3."TipNombre" = p_tipo))
-    GROUP BY z."ZonNombre", r."RutDistanciaKm", r."RutTiempoEstimadoMin",
+    GROUP BY z."ZonNombre", r."RutDescripcion", r."RutDistanciaKm", r."RutTiempoEstimadoMin",
              r."RutDificultad", z."ZonCostoAprox"
     ORDER BY r."RutDistanciaKm";
 END;
@@ -269,23 +273,27 @@ CREATE OR REPLACE FUNCTION fn_itinerario(
     p_codigo_estacion VARCHAR,
     p_fecha           DATE
 ) RETURNS TABLE (
-    zona           VARCHAR,
-    km_ida_vuelta  NUMERIC,
-    minutos        INTEGER,
-    dificultad     VARCHAR,
-    clima          VARCHAR,
-    temperatura_c  NUMERIC,
-    aforo          TEXT,
-    costo_total    NUMERIC
+    zona             VARCHAR,
+    descripcion_ruta VARCHAR,
+    km_ida_vuelta    NUMERIC,
+    minutos          INTEGER,
+    dificultad       VARCHAR,
+    clima            VARCHAR,
+    temperatura_min_c NUMERIC,
+    temperatura_max_c NUMERIC,
+    aforo            TEXT,
+    costo_total      NUMERIC
 ) AS $$
 BEGIN
     RETURN QUERY
     SELECT z."ZonNombre",
+           r."RutDescripcion",
            r."RutDistanciaKm",
            r."RutTiempoEstimadoMin",
            r."RutDificultad",
            c."CliEstadoClima",
-           c."CliTemperaturaC",
+           c."CliTemperaturaMinimaC",
+           c."CliTemperaturaMaximaC",
            CASE
                WHEN z."ZonCupoMaximoDiario" IS NULL THEN 'SIN CONTROL'
                WHEN COALESCE(a."AfoCupoUtilizado", 0) >= z."ZonCupoMaximoDiario"

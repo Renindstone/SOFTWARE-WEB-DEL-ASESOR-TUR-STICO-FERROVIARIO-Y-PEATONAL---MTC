@@ -138,10 +138,20 @@ CREATE TABLE zona_tipo_turismo (
  
 -- ----------------------------------------------------------------------------
 -- 8. RUTA_PEATONAL  (motor de rutas - RNF-04 circuito cerrado)
+--
+-- NOTA: "RutIdEstacionOrigen" es una FK propia y directa hacia estacion, en
+-- vez de resolverse mediante zona_turistica.ZonIdEstacionCercana. Los campos
+-- RutDistanciaKm/RutTiempoEstimadoMin/RutDificultad son el resultado de un
+-- calculo (Haversine) hecho en un momento especifico con una estacion de
+-- origen especifica (RutaPeatonalService, seccion 5.1). Si la estacion mas
+-- cercana de la zona cambiara mas adelante, una ruta ya calculada no debe
+-- cambiar de origen "en automatico" via JOIN, o sus valores de distancia y
+-- tiempo quedarian inconsistentes con la estacion realmente usada al calcularlos.
 -- ----------------------------------------------------------------------------
 CREATE TABLE ruta_peatonal (
     "RutIdRuta"              INTEGER GENERATED ALWAYS AS IDENTITY,
     "RutNombre"              VARCHAR(100)   NOT NULL,
+    "RutDescripcion"         VARCHAR(500)   NULL,
     "RutDistanciaKm"         NUMERIC(5,2)   NOT NULL,
     "RutTiempoEstimadoMin"   INTEGER        NOT NULL,
     "RutDificultad"          VARCHAR(10)    NOT NULL,
@@ -165,7 +175,8 @@ CREATE TABLE ruta_peatonal (
 CREATE TABLE prevision_clima (
     "CliIdClima"              INTEGER GENERATED ALWAYS AS IDENTITY,
     "CliFecha"                DATE           NOT NULL,
-    "CliTemperaturaC"         NUMERIC(4,1)   NOT NULL,
+    "CliTemperaturaMinimaC"   NUMERIC(4,1)   NOT NULL,
+    "CliTemperaturaMaximaC"   NUMERIC(4,1)   NOT NULL,
     "CliProbabilidadLluvia"   NUMERIC(4,1)   NOT NULL,
     "CliEstadoClima"          VARCHAR(30)    NOT NULL,
     "CliIdEstacion"           INTEGER        NOT NULL,
@@ -173,6 +184,7 @@ CREATE TABLE prevision_clima (
     CONSTRAINT fk_clima_estacion     FOREIGN KEY ("CliIdEstacion")
         REFERENCES estacion ("EstIdEstacion") ON DELETE RESTRICT,
     CONSTRAINT ck_clima_lluvia       CHECK ("CliProbabilidadLluvia" BETWEEN 0 AND 100),
+    CONSTRAINT ck_clima_temp_rango   CHECK ("CliTemperaturaMaximaC" >= "CliTemperaturaMinimaC"),
     CONSTRAINT uq_clima_est_fecha    UNIQUE ("CliIdEstacion", "CliFecha")
 );
  

@@ -249,55 +249,72 @@ JOIN tipo_turismo   t ON t."TipNombre"  = v.tipo;
 -- el doble de la distancia estacion -> zona, segun el calculo definido en
 -- RutaPeatonalService (formula de Haversine x 2).
 -- ----------------------------------------------------------------------------
-INSERT INTO ruta_peatonal ("RutNombre", "RutDistanciaKm", "RutTiempoEstimadoMin",
+INSERT INTO ruta_peatonal ("RutNombre", "RutDescripcion", "RutDistanciaKm", "RutTiempoEstimadoMin",
                            "RutDificultad", "RutIdEstacionOrigen",
                            "RutIdZonaDestino", "RutEsIdaVuelta")
-SELECT v.nombre, v.km, v.minutos, v.dificultad,
+SELECT v.nombre, v.descripcion, v.km, v.minutos, v.dificultad,
        z."ZonIdEstacionCercana", z."ZonIdZona", TRUE
 FROM (VALUES
-    ('Circuito San Pedro - Mercado Central',        0.30,   8, 'Baja',  'Mercado Central de San Pedro'),
-    ('Circuito San Pedro - Plaza de Armas',         1.20,  25, 'Baja',  'Plaza de Armas del Cusco'),
-    ('Circuito San Pedro - Qorikancha',             1.80,  35, 'Baja',  'Templo del Qorikancha'),
-    ('Circuito San Pedro - San Blas',               2.40,  55, 'Media', 'Barrio de San Blas'),
-    ('Circuito San Pedro - Sacsayhuaman',           4.60, 130, 'Alta',  'Parque Arqueologico de Sacsayhuaman'),
-    ('Circuito Ollantaytambo - Fortaleza',          1.20,  30, 'Baja',  'Conjunto Arqueologico de Ollantaytambo'),
-    ('Circuito Ollantaytambo - Pinkuylluna',        1.80,  75, 'Alta',  'Colcas de Pinkuylluna'),
-    ('Circuito Aguas Calientes - Llaqta a pie',    10.00, 240, 'Alta',  'Llaqta de Machu Picchu'),
-    ('Circuito Aguas Calientes - Banos Termales',   1.60,  35, 'Baja',  'Banos Termales de Aguas Calientes'),
-    ('Circuito Aguas Calientes - Mandor',           6.40, 130, 'Media', 'Jardines de Mandor'),
-    ('Circuito Aguas Calientes - Museo de Sitio',   3.80,  90, 'Media', 'Museo de Sitio Manuel Chavez Ballon'),
-    ('Circuito Urubamba - Plaza de Armas',          2.20,  40, 'Baja',  'Plaza de Armas de Urubamba'),
-    ('Circuito Puno - Mirador Kuntur Wasi',         2.80,  70, 'Alta',  'Mirador Kuntur Wasi'),
-    ('Circuito Puno - Puerto Lacustre',             2.00,  30, 'Baja',  'Puerto Lacustre de Puno'),
-    ('Circuito Arequipa - Santa Catalina',          2.60,  45, 'Baja',  'Monasterio de Santa Catalina'),
-    ('Circuito Arequipa - Mirador de Yanahuara',    4.20,  80, 'Media', 'Mirador de Yanahuara')
-) AS v(nombre, km, minutos, dificultad, zona)
+    ('Circuito San Pedro - Mercado Central',
+     'Paseo corto y llano por calles del centro historico hasta el mercado.', 0.30,   8, 'Baja',  'Mercado Central de San Pedro'),
+    ('Circuito San Pedro - Plaza de Armas',
+     'Caminata urbana llana por calles empedradas del centro del Cusco.', 1.20,  25, 'Baja',  'Plaza de Armas del Cusco'),
+    ('Circuito San Pedro - Qorikancha',
+     'Recorrido urbano llano pasando por calles coloniales hasta el templo inca.', 1.80,  35, 'Baja',  'Templo del Qorikancha'),
+    ('Circuito San Pedro - San Blas',
+     'Ascenso moderado por calles empedradas y escalinatas del barrio de artesanos.', 2.40,  55, 'Media', 'Barrio de San Blas'),
+    ('Circuito San Pedro - Sacsayhuaman',
+     'Ascenso pronunciado por sendero y escalinatas hasta el complejo ceremonial, con vista panoramica de la ciudad.', 4.60, 130, 'Alta',  'Parque Arqueologico de Sacsayhuaman'),
+    ('Circuito Ollantaytambo - Fortaleza',
+     'Caminata corta y llana desde la estacion hasta el ingreso de la fortaleza inca.', 1.20,  30, 'Baja',  'Conjunto Arqueologico de Ollantaytambo'),
+    ('Circuito Ollantaytambo - Pinkuylluna',
+     'Ascenso exigente por sendero de tierra en la ladera del cerro, sin baranda.', 1.80,  75, 'Alta',  'Colcas de Pinkuylluna'),
+    ('Circuito Aguas Calientes - Llaqta a pie',
+     'Ascenso largo y exigente por el sendero de escalinatas hacia el santuario de Machu Picchu (alternativa al bus).', 10.00, 240, 'Alta',  'Llaqta de Machu Picchu'),
+    ('Circuito Aguas Calientes - Banos Termales',
+     'Paseo llano por el pueblo hasta las pozas de aguas termales.', 1.60,  35, 'Baja',  'Banos Termales de Aguas Calientes'),
+    ('Circuito Aguas Calientes - Mandor',
+     'Caminata por sendero de tierra junto a la via ferrea hasta la reserva y su catarata.', 6.40, 130, 'Media', 'Jardines de Mandor'),
+    ('Circuito Aguas Calientes - Museo de Sitio',
+     'Recorrido llano junto al rio Urubamba hasta el museo de sitio.', 3.80,  90, 'Media', 'Museo de Sitio Manuel Chavez Ballon'),
+    ('Circuito Urubamba - Plaza de Armas',
+     'Paseo corto y llano por el centro del pueblo.', 2.20,  40, 'Baja',  'Plaza de Armas de Urubamba'),
+    ('Circuito Puno - Mirador Kuntur Wasi',
+     'Ascenso pronunciado por escalinatas hasta el mirador con vista al lago Titicaca.', 2.80,  70, 'Alta',  'Mirador Kuntur Wasi'),
+    ('Circuito Puno - Puerto Lacustre',
+     'Caminata llana por el malecon hasta el muelle turistico.', 2.00,  30, 'Baja',  'Puerto Lacustre de Puno'),
+    ('Circuito Arequipa - Santa Catalina',
+     'Paseo llano por el centro historico en sillar hasta el monasterio.', 2.60,  45, 'Baja',  'Monasterio de Santa Catalina'),
+    ('Circuito Arequipa - Mirador de Yanahuara',
+     'Caminata moderada por calles empedradas hasta el mirador con vista al volcan Misti.', 4.20,  80, 'Media', 'Mirador de Yanahuara')
+) AS v(nombre, descripcion, km, minutos, dificultad, zona)
 JOIN zona_turistica z ON z."ZonNombre" = v.zona;
 
 -- ----------------------------------------------------------------------------
 -- 9. PREVISION_CLIMA  (simulacion del feed diario del SENAMHI)
 -- ----------------------------------------------------------------------------
-INSERT INTO prevision_clima ("CliFecha", "CliTemperaturaC", "CliProbabilidadLluvia",
-                             "CliEstadoClima", "CliIdEstacion")
-SELECT v.fecha::DATE, v.temp, v.lluvia, v.estado,
+INSERT INTO prevision_clima ("CliFecha", "CliTemperaturaMinimaC", "CliTemperaturaMaximaC",
+                             "CliProbabilidadLluvia", "CliEstadoClima", "CliIdEstacion")
+SELECT v.fecha::DATE, v.tmin, v.tmax, v.lluvia, v.estado,
        e."EstIdEstacion"
 FROM (VALUES
-    ('2026-09-01', 18.5, 10.0, 'Soleado',            'CUS-SPD'),
-    ('2026-09-02', 17.2, 25.0, 'Parcialmente nublado','CUS-SPD'),
-    ('2026-09-03', 16.8, 40.0, 'Nublado',            'CUS-SPD'),
-    ('2026-09-01', 20.1, 15.0, 'Soleado',            'CUS-OLL'),
-    ('2026-09-02', 19.4, 30.0, 'Parcialmente nublado','CUS-OLL'),
-    ('2026-09-03', 18.0, 55.0, 'Lluvia ligera',      'CUS-OLL'),
-    ('2026-09-01', 23.6, 35.0, 'Parcialmente nublado','CUS-MAP'),
-    ('2026-09-02', 22.9, 60.0, 'Lluvia ligera',      'CUS-MAP'),
-    ('2026-09-03', 21.5, 80.0, 'Lluvioso',           'CUS-MAP'),
-    ('2026-09-01', 21.0, 20.0, 'Soleado',            'CUS-URU'),
-    ('2026-09-02', 20.3, 35.0, 'Parcialmente nublado','CUS-URU'),
-    ('2026-09-01', 14.2, 12.0, 'Soleado',            'PUN-PUN'),
-    ('2026-09-02', 13.8, 22.0, 'Parcialmente nublado','PUN-PUN'),
-    ('2026-09-01', 22.4,  5.0, 'Soleado',            'AQP-AQP'),
-    ('2026-09-02', 22.0,  8.0, 'Soleado',            'AQP-AQP')
-) AS v(fecha, temp, lluvia, estado, codigo)
+    -- fecha,        tmin, tmax, lluvia, estado,                  estacion
+    ('2026-09-01',   4.0, 18.5, 10.0, 'Soleado',             'CUS-SPD'),
+    ('2026-09-02',   3.5, 17.2, 25.0, 'Parcialmente nublado','CUS-SPD'),
+    ('2026-09-03',   5.0, 16.8, 40.0, 'Nublado',             'CUS-SPD'),
+    ('2026-09-01',   5.5, 20.1, 15.0, 'Soleado',             'CUS-OLL'),
+    ('2026-09-02',   5.0, 19.4, 30.0, 'Parcialmente nublado','CUS-OLL'),
+    ('2026-09-03',   7.0, 18.0, 55.0, 'Lluvia ligera',       'CUS-OLL'),
+    ('2026-09-01',  14.0, 23.6, 35.0, 'Parcialmente nublado','CUS-MAP'),
+    ('2026-09-02',  15.0, 22.9, 60.0, 'Lluvia ligera',       'CUS-MAP'),
+    ('2026-09-03',  16.5, 21.5, 80.0, 'Lluvioso',            'CUS-MAP'),
+    ('2026-09-01',   6.0, 21.0, 20.0, 'Soleado',             'CUS-URU'),
+    ('2026-09-02',   6.5, 20.3, 35.0, 'Parcialmente nublado','CUS-URU'),
+    ('2026-09-01',  -2.0, 14.2, 12.0, 'Soleado',             'PUN-PUN'),
+    ('2026-09-02',  -1.5, 13.8, 22.0, 'Parcialmente nublado','PUN-PUN'),
+    ('2026-09-01',   8.0, 22.4,  5.0, 'Soleado',             'AQP-AQP'),
+    ('2026-09-02',   8.5, 22.0,  8.0, 'Soleado',             'AQP-AQP')
+) AS v(fecha, tmin, tmax, lluvia, estado, codigo)
 JOIN estacion e ON e."EstCodigo" = v.codigo;
 
 -- ----------------------------------------------------------------------------
