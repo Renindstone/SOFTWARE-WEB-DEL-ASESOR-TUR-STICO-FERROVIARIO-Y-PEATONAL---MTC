@@ -32,7 +32,8 @@ class SenamhiClientTest {
         PrevisionClimaSenamhiDTO feed = new PrevisionClimaSenamhiDTO();
         feed.setCodigoEstacion("OLL");
         feed.setFecha("2026-08-29");
-        feed.setTemperaturaC(new BigDecimal("6.0"));
+        feed.setTemperaturaMinimaC(new BigDecimal("6.0"));
+        feed.setTemperaturaMaximaC(new BigDecimal("14.5"));
         feed.setProbabilidadLluvia(probabilidadLluvia);
         feed.setEstadoClima("Parcialmente nublado");
         return feed;

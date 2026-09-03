@@ -71,6 +71,14 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
+			<!-- RF-08: generacion del informe consolidado en PDF (GeneradorPdf).
+			     Fijado en 2.0.5 (no 3.x) porque esa serie requiere Java 21;
+			     2.0.5 declara java.version=17 y usa el paquete com.lowagie.text. -->
+			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf</artifactId>
+			<version>2.0.5</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator-test</artifactId>
 			<scope>test</scope>

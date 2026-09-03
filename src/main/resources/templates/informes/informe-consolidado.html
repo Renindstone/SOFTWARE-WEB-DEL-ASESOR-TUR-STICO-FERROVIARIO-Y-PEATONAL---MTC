@@ -18,7 +18,7 @@
     <li class="list-group-item">Distancia (ida y vuelta): <span th:text="${informe.ruta.distanciaKm} + ' km'"></span></li>
     <li class="list-group-item">Tiempo estimado: <span th:text="${informe.ruta.tiempoEstimadoMin} + ' min'"></span></li>
     <li class="list-group-item">Dificultad: <span th:text="${informe.ruta.dificultad}"></span></li>
-    <li class="list-group-item">Clima previsto: <span th:text="${informe.temperaturaC} + '°C, ' + ${informe.probabilidadLluvia} + '% lluvia (' + ${informe.estadoClima} + ')'"></span></li>
+    <li class="list-group-item">Clima previsto: <span th:text="${informe.temperaturaMinimaC} + ' - ' + ${informe.temperaturaMaximaC} + '°C, ' + ${informe.probabilidadLluvia} + '% lluvia (' + ${informe.estadoClima} + ')'"></span></li>
     <li class="list-group-item">Tarifa del tren: <span th:text="${informe.tarifaTren}"></span></li>
     <li class="list-group-item"><strong>Total estimado: <span th:text="${informe.totalEstimado}"></span></strong></li>
   </ul>

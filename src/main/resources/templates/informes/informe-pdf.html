@@ -24,7 +24,7 @@
     <tr><th>Distancia (ida y vuelta)</th><td th:text="${informe.ruta.distanciaKm} + ' km'"></td></tr>
     <tr><th>Tiempo estimado</th><td th:text="${informe.ruta.tiempoEstimadoMin} + ' min'"></td></tr>
     <tr><th>Dificultad</th><td th:text="${informe.ruta.dificultad}"></td></tr>
-    <tr><th>Clima previsto</th><td th:text="${informe.temperaturaC} + '°C, ' + ${informe.probabilidadLluvia} + '% lluvia'"></td></tr>
+    <tr><th>Clima previsto</th><td th:text="${informe.temperaturaMinimaC} + ' - ' + ${informe.temperaturaMaximaC} + '°C, ' + ${informe.probabilidadLluvia} + '% lluvia'"></td></tr>
     <tr><th>Tarifa del tren</th><td th:text="${informe.tarifaTren}"></td></tr>
     <tr><th>Total estimado</th><td th:text="${informe.totalEstimado}"></td></tr>
   </table>

@@ -14,7 +14,8 @@ public class InformeConsolidadoDTO {
     private String estacionOrigen;
     private String zonaDestino;
     private RutaCalculadaDTO ruta;
-    private BigDecimal temperaturaC;
+    private BigDecimal temperaturaMinimaC;
+    private BigDecimal temperaturaMaximaC;
     private BigDecimal probabilidadLluvia;
     private String estadoClima;
     private BigDecimal tarifaTren;
@@ -60,12 +61,20 @@ public class InformeConsolidadoDTO {
         this.ruta = ruta;
     }
 
-    public BigDecimal getTemperaturaC() {
-        return temperaturaC;
+    public BigDecimal getTemperaturaMinimaC() {
+        return temperaturaMinimaC;
     }
 
-    public void setTemperaturaC(BigDecimal temperaturaC) {
-        this.temperaturaC = temperaturaC;
+    public void setTemperaturaMinimaC(BigDecimal temperaturaMinimaC) {
+        this.temperaturaMinimaC = temperaturaMinimaC;
+    }
+
+    public BigDecimal getTemperaturaMaximaC() {
+        return temperaturaMaximaC;
+    }
+
+    public void setTemperaturaMaximaC(BigDecimal temperaturaMaximaC) {
+        this.temperaturaMaximaC = temperaturaMaximaC;
     }
 
     public BigDecimal getProbabilidadLluvia() {

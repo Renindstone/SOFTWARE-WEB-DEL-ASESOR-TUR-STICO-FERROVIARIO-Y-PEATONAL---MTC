@@ -6,7 +6,8 @@ import java.math.BigDecimal;
 public class PrevisionClimaSenamhiDTO {
     private String codigoEstacion;
     private String fecha;
-    private BigDecimal temperaturaC;
+    private BigDecimal temperaturaMinimaC;
+    private BigDecimal temperaturaMaximaC;
     private BigDecimal probabilidadLluvia;
     private String estadoClima;
 
@@ -14,8 +15,10 @@ public class PrevisionClimaSenamhiDTO {
     public void setCodigoEstacion(String codigoEstacion) { this.codigoEstacion = codigoEstacion; }
     public String getFecha() { return fecha; }
     public void setFecha(String fecha) { this.fecha = fecha; }
-    public BigDecimal getTemperaturaC() { return temperaturaC; }
-    public void setTemperaturaC(BigDecimal temperaturaC) { this.temperaturaC = temperaturaC; }
+    public BigDecimal getTemperaturaMinimaC() { return temperaturaMinimaC; }
+    public void setTemperaturaMinimaC(BigDecimal temperaturaMinimaC) { this.temperaturaMinimaC = temperaturaMinimaC; }
+    public BigDecimal getTemperaturaMaximaC() { return temperaturaMaximaC; }
+    public void setTemperaturaMaximaC(BigDecimal temperaturaMaximaC) { this.temperaturaMaximaC = temperaturaMaximaC; }
     public BigDecimal getProbabilidadLluvia() { return probabilidadLluvia; }
     public void setProbabilidadLluvia(BigDecimal probabilidadLluvia) { this.probabilidadLluvia = probabilidadLluvia; }
     public String getEstadoClima() { return estadoClima; }

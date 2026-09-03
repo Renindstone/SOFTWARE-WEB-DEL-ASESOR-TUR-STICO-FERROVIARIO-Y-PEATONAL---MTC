@@ -17,8 +17,11 @@ public class PrevisionClima {
     @Column(name = "CliFecha", nullable = false)
     private LocalDate cliFecha;
 
-    @Column(name = "CliTemperaturaC", precision = 4, scale = 1, nullable = false)
-    private BigDecimal cliTemperaturaC;
+    @Column(name = "CliTemperaturaMinimaC", precision = 4, scale = 1, nullable = false)
+    private BigDecimal cliTemperaturaMinimaC;
+
+    @Column(name = "CliTemperaturaMaximaC", precision = 4, scale = 1, nullable = false)
+    private BigDecimal cliTemperaturaMaximaC;
 
     @Column(name = "CliProbabilidadLluvia", precision = 4, scale = 1, nullable = false)
     private BigDecimal cliProbabilidadLluvia;
@@ -49,12 +52,20 @@ public class PrevisionClima {
         this.cliFecha = cliFecha;
     }
 
-    public BigDecimal getCliTemperaturaC() {
-        return cliTemperaturaC;
+    public BigDecimal getCliTemperaturaMinimaC() {
+        return cliTemperaturaMinimaC;
     }
 
-    public void setCliTemperaturaC(BigDecimal cliTemperaturaC) {
-        this.cliTemperaturaC = cliTemperaturaC;
+    public void setCliTemperaturaMinimaC(BigDecimal cliTemperaturaMinimaC) {
+        this.cliTemperaturaMinimaC = cliTemperaturaMinimaC;
+    }
+
+    public BigDecimal getCliTemperaturaMaximaC() {
+        return cliTemperaturaMaximaC;
+    }
+
+    public void setCliTemperaturaMaximaC(BigDecimal cliTemperaturaMaximaC) {
+        this.cliTemperaturaMaximaC = cliTemperaturaMaximaC;
     }
 
     public BigDecimal getCliProbabilidadLluvia() {

@@ -68,7 +68,8 @@ public class InformeService {
         informe.setZonaDestino(destino.getZonNombre());
         informe.setRuta(ruta);
         clima.ifPresent(c -> {
-            informe.setTemperaturaC(c.getCliTemperaturaC());
+            informe.setTemperaturaMinimaC(c.getCliTemperaturaMinimaC());
+            informe.setTemperaturaMaximaC(c.getCliTemperaturaMaximaC());
             informe.setProbabilidadLluvia(c.getCliProbabilidadLluvia());
             informe.setEstadoClima(c.getCliEstadoClima());
         });

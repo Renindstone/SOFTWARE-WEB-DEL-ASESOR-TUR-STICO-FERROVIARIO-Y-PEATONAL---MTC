@@ -15,6 +15,9 @@ public class RutaPeatonal {
     @Column(name = "RutNombre", length = 100, nullable = false)
     private String rutNombre;
 
+    @Column(name = "RutDescripcion", length = 500)
+    private String rutDescripcion;
+
     @Column(name = "RutDistanciaKm", precision = 5, scale = 2, nullable = false)
     private BigDecimal rutDistanciaKm;
 
@@ -53,6 +56,14 @@ public class RutaPeatonal {
 
     public void setRutNombre(String rutNombre) {
         this.rutNombre = rutNombre;
+    }
+
+    public String getRutDescripcion() {
+        return rutDescripcion;
+    }
+
+    public void setRutDescripcion(String rutDescripcion) {
+        this.rutDescripcion = rutDescripcion;
     }
 
     public BigDecimal getRutDistanciaKm() {
