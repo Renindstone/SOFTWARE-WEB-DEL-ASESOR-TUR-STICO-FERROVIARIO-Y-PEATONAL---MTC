@@ -12,11 +12,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * Seguridad por roles (HURF06): ADMIN_MTC, TRAVEL_GROUP_USER, TURISTA_PUBLICO.
+ * Seguridad por roles (HURF06): ADMIN_MTC, TRAVEL_GROUP_USER, PERURAIL_ADMIN,
+ * TURISTA_PUBLICO.
  * Modulo de administracion restringido; panel del turista y consulta de
  * zonas/estaciones abiertos a TURISTA_PUBLICO; CRUD de zonas y consulta de
- * estaciones restringidos a TRAVEL_GROUP_USER; auditoria y mantenimiento
- * de horarios/precios restringidos a ADMIN_MTC.
+ * estaciones restringidos a TRAVEL_GROUP_USER; auditoria restringida a
+ * ADMIN_MTC; mantenimiento de horarios/precios de PeruRail (RF-12)
+ * restringido a ADMIN_MTC y PERURAIL_ADMIN.
  */
 @Configuration
 public class SecurityConfig {
@@ -42,7 +44,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/css/**", "/js/**", "/img/**", "/preferencias/**").permitAll()
                         .requestMatchers("/admin/auditoria/**").hasRole("ADMIN_MTC")
-                        .requestMatchers("/admin/servicios-tren/**").hasRole("ADMIN_MTC")
+                        .requestMatchers("/admin/servicios-tren/**").hasAnyRole("ADMIN_MTC", "PERURAIL_ADMIN")
                         .requestMatchers("/admin/zonas/**").hasAnyRole("ADMIN_MTC", "TRAVEL_GROUP_USER")
                         .requestMatchers("/admin/estaciones/**").hasAnyRole("ADMIN_MTC", "TRAVEL_GROUP_USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN_MTC")
