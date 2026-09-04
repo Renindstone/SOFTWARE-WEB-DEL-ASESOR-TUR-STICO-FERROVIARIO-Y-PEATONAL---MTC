@@ -36,7 +36,7 @@ public class ZonaTuristica {
     @Column(name = "ZonCupoMaximoDiario")
     private Integer cupoMaximoDiario;
 
-    @Column(name = "ZonEstado", length = 15, nullable = false)
+    @Column(name = "ZonEstado", length = 10, nullable = false)
     private String estado = "Disponible";
 
     @OneToMany(mappedBy = "zonaTuristica", cascade = CascadeType.ALL, orphanRemoval = true)
