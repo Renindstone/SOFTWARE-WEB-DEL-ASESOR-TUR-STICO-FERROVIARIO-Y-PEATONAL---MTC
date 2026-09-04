@@ -21,7 +21,7 @@ public class InformePlanificacion {
     @Column(name = "InfIdInforme")
     private Integer id;
 
-    @Column(name = "InfCodigo", length = 30, nullable = false, unique = true)
+    @Column(name = "InfCodigo", length = 15, nullable = false, unique = true)
     private String codigo;
 
     @Column(name = "InfFechaEmision", nullable = false)
