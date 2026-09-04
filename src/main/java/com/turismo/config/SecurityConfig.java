@@ -43,11 +43,11 @@ public class SecurityConfig {
                 .userDetailsService(customUserDetailsService)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/css/**", "/js/**", "/img/**", "/preferencias/**").permitAll()
-                        .requestMatchers("/admin/auditoria/**").hasRole("ADMIN_MTC")
-                        .requestMatchers("/admin/servicios-tren/**").hasAnyRole("ADMIN_MTC", "PERURAIL_ADMIN")
-                        .requestMatchers("/admin/zonas/**").hasAnyRole("ADMIN_MTC", "TRAVEL_GROUP_USER")
-                        .requestMatchers("/admin/estaciones/**").hasAnyRole("ADMIN_MTC", "TRAVEL_GROUP_USER")
-                        .requestMatchers("/admin/**").hasRole("ADMIN_MTC")
+                        .requestMatchers("/auditoria/**").hasRole("ADMIN_MTC")
+                        .requestMatchers("/servicios-tren/**").hasAnyRole("ADMIN_MTC", "PERURAIL_ADMIN")
+                        .requestMatchers("/zonas/**").hasAnyRole("ADMIN_MTC", "TRAVEL_GROUP_USER")
+                        .requestMatchers("/estaciones/**").hasAnyRole("ADMIN_MTC", "TRAVEL_GROUP_USER")
+                        .requestMatchers("/**").hasRole("ADMIN_MTC")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")

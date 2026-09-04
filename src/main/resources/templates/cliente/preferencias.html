@@ -97,7 +97,7 @@
         <div class="mb-4">
           <div class="section-label"><i class="bi bi-train-front"></i> Estación ferroviaria de partida</div>
           <select class="form-select" th:field="*{idEstacionOrigen}">
-            <option th:each="est : ${estaciones}" th:value="${est.estIdEstacion}" th:text="${est.estNombre}"></option>
+            <option th:each="est : ${estaciones}" th:value="${est.Id}" th:text="${est.Nombre}"></option>
           </select>
         </div>
 

@@ -2,6 +2,8 @@ package com.turismo.service;
 
 import com.turismo.model.Estacion;
 import com.turismo.repository.EstacionRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,11 +13,8 @@ import java.util.Optional;
 @Service
 public class EstacionService {
 
-    private final EstacionRepository estacionRepository;
-
-    public EstacionService(EstacionRepository estacionRepository) {
-        this.estacionRepository = estacionRepository;
-    }
+    @Autowired 
+    private EstacionRepository estacionRepository;
 
     /** RF-02: excluye del listado las estaciones marcadas como inactivas. */
     public List<Estacion> listarActivas() {

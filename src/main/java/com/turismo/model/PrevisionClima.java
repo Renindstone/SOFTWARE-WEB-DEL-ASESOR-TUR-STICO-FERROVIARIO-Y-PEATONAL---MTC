@@ -23,8 +23,11 @@ public class PrevisionClima {
     @Column(name = "CliFecha", nullable = false)
     private LocalDate fecha;
 
-    @Column(name = "CliTemperaturaC", precision = 4, scale = 1, nullable = false)
-    private BigDecimal temperaturaC;
+    @Column(name = "CliTemperaturaMinimaC", precision = 4, scale = 1, nullable = false)
+    private BigDecimal temperaturaMinC;
+    
+    @Column(name = "CliTemperaturaMaximaC", precision = 4, scale = 1, nullable = false)
+    private BigDecimal temperaturaMaxC;
 
     @Column(name = "CliProbabilidadLluvia", precision = 4, scale = 1, nullable = false)
     private BigDecimal probabilidadLluvia;

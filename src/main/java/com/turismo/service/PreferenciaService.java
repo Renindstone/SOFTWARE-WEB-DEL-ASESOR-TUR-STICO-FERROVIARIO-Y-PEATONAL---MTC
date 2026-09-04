@@ -5,6 +5,8 @@ import com.turismo.dto.ZonaResultadoDTO;
 import com.turismo.model.ZonaTipoTurismo;
 import com.turismo.model.ZonaTuristica;
 import com.turismo.repository.ZonaTipoTurismoRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,14 +20,10 @@ import java.util.stream.Collectors;
 @Service
 public class PreferenciaService {
 
-    private final ZonaTuristicaService zonaTuristicaService;
-    private final ZonaTipoTurismoRepository zonaTipoTurismoRepository;
-
-    public PreferenciaService(ZonaTuristicaService zonaTuristicaService,
-                               ZonaTipoTurismoRepository zonaTipoTurismoRepository) {
-        this.zonaTuristicaService = zonaTuristicaService;
-        this.zonaTipoTurismoRepository = zonaTipoTurismoRepository;
-    }
+    @Autowired 
+    private ZonaTuristicaService zonaTuristicaService;
+    @Autowired
+    private ZonaTipoTurismoRepository zonaTipoTurismoRepository;
 
     public List<ZonaResultadoDTO> buscarZonasRecomendadas(PreferenciaDTO preferencia) {
         List<ZonaTuristica> zonas = zonaTuristicaService.listarPorEstacion(preferencia.getIdEstacionOrigen());

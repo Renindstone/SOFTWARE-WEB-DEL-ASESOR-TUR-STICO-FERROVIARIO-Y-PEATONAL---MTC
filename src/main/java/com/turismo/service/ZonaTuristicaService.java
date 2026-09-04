@@ -6,6 +6,8 @@ import com.turismo.model.ZonaTuristica;
 import com.turismo.repository.TipoTurismoRepository;
 import com.turismo.repository.ZonaTipoTurismoRepository;
 import com.turismo.repository.ZonaTuristicaRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,17 +22,12 @@ import java.util.Optional;
 @Service
 public class ZonaTuristicaService {
 
-    private final ZonaTuristicaRepository zonaTuristicaRepository;
-    private final ZonaTipoTurismoRepository zonaTipoTurismoRepository;
-    private final TipoTurismoRepository tipoTurismoRepository;
-
-    public ZonaTuristicaService(ZonaTuristicaRepository zonaTuristicaRepository,
-                                 ZonaTipoTurismoRepository zonaTipoTurismoRepository,
-                                 TipoTurismoRepository tipoTurismoRepository) {
-        this.zonaTuristicaRepository = zonaTuristicaRepository;
-        this.zonaTipoTurismoRepository = zonaTipoTurismoRepository;
-        this.tipoTurismoRepository = tipoTurismoRepository;
-    }
+    @Autowired 
+    private ZonaTuristicaRepository zonaTuristicaRepository;
+    @Autowired
+    private ZonaTipoTurismoRepository zonaTipoTurismoRepository;
+    @Autowired
+    private TipoTurismoRepository tipoTurismoRepository;
 
     public List<ZonaTuristica> listarActivas() {
         return zonaTuristicaRepository.findByEstado("Activa");

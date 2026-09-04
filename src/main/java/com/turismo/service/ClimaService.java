@@ -36,7 +36,8 @@ public class ClimaService {
 
         existente.setEstacion(estacion);
         existente.setFecha(fecha);
-        existente.setTemperaturaC(datos.getTemperaturaC());
+        existente.setTemperaturaMinC(datos.getTemperaturaMinC());
+        existente.setTemperaturaMaxC(datos.getTemperaturaMaxC());
         existente.setProbabilidadLluvia(datos.getProbabilidadLluvia());
         existente.setEstadoClima(datos.getEstadoClima());
 
