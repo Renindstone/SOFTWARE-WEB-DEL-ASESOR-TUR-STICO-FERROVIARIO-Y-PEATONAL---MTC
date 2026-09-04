@@ -36,8 +36,8 @@ public class RutaPeatonalService {
      */
     public RutaCalculadaDTO calcularRutaPeatonalIdaVuelta(Estacion origen, ZonaTuristica destino) {
         BigDecimal distanciaIda = HaversineCalculator.calcularDistanciaKm(
-                origen.getEstLatitud(), origen.getEstLongitud(),
-                destino.getEstacionCercana().getEstLatitud(), destino.getEstacionCercana().getEstLongitud());
+                origen.getLatitud(), origen.getLongitud(),
+                destino.getEstacionCercana().getLatitud(), destino.getEstacionCercana().getLongitud());
 
         if (distanciaIda.compareTo(BigDecimal.ZERO) <= 0) {
             throw new RutaInvalidaException(

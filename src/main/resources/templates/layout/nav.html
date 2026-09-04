@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<nav th:fragment="nav" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+<nav th:fragment="nav" class="navbar navbar-expand-lg navbar-dark mb-4" style="background:#14453D;">
   <div class="container">
-    <a class="navbar-brand" href="/">
+    <a class="navbar-brand d-flex align-items-center" href="/" style="color:#F6F4EF;">
       <img src="/img/logo-mtc.png" alt="MTC" height="28" class="me-2">
       Asesor Turístico Ferroviario y Peatonal
     </a>
     <div class="navbar-nav">
-      <a class="nav-link" href="/preferencias">Turista</a>
-      <a class="nav-link" href="/admin/zonas" sec:authorize="hasAnyRole('ADMIN_MTC','TRAVEL_GROUP_USER')" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">Zonas</a>
-      <a class="nav-link" href="/admin/estaciones" sec:authorize="hasAnyRole('ADMIN_MTC','TRAVEL_GROUP_USER')" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">Estaciones</a>
-      <a class="nav-link" href="/admin/servicios-tren" sec:authorize="hasRole('ADMIN_MTC')" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">Horarios/Tarifas</a>
-      <a class="nav-link" href="/admin/auditoria" sec:authorize="hasRole('ADMIN_MTC')" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">Auditoría</a>
-      <a class="nav-link" href="/login">Ingresar</a>
+      <a class="nav-link" href="/preferencias" style="color:rgba(246,244,239,.85);">Turista</a>
+      <a class="nav-link" href="/admin/zonas" sec:authorize="hasAnyRole('ADMIN_MTC','TRAVEL_GROUP_USER')" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" style="color:rgba(246,244,239,.85);">Zonas</a>
+      <a class="nav-link" href="/admin/estaciones" sec:authorize="hasAnyRole('ADMIN_MTC','TRAVEL_GROUP_USER')" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" style="color:rgba(246,244,239,.85);">Estaciones</a>
+      <a class="nav-link" href="/admin/servicios-tren" sec:authorize="hasRole('ADMIN_MTC')" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" style="color:rgba(246,244,239,.85);">Horarios/Tarifas</a>
+      <a class="nav-link" href="/admin/auditoria" sec:authorize="hasRole('ADMIN_MTC')" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" style="color:rgba(246,244,239,.85);">Auditoría</a>
+      <a class="nav-link fw-semibold" href="/login" style="color:#C89B3C;">Ingresar</a>
     </div>
   </div>
 </nav>

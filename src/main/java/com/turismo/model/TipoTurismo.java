@@ -1,46 +1,26 @@
 package com.turismo.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "tipo_turismo")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class TipoTurismo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "TipIdTipoTurismo")
-    private Integer tipIdTipoTurismo;
+    private Integer id;
 
     @Column(name = "TipNombre", length = 30, nullable = false, unique = true)
-    private String tipNombre;
+    private String nombre;
 
     @Column(name = "TipDescripcion", length = 150)
-    private String tipDescripcion;
+    private String descripcion;
 
-    public TipoTurismo() {
-    }
-
-    public Integer getTipIdTipoTurismo() {
-        return tipIdTipoTurismo;
-    }
-
-    public void setTipIdTipoTurismo(Integer tipIdTipoTurismo) {
-        this.tipIdTipoTurismo = tipIdTipoTurismo;
-    }
-
-    public String getTipNombre() {
-        return tipNombre;
-    }
-
-    public void setTipNombre(String tipNombre) {
-        this.tipNombre = tipNombre;
-    }
-
-    public String getTipDescripcion() {
-        return tipDescripcion;
-    }
-
-    public void setTipDescripcion(String tipDescripcion) {
-        this.tipDescripcion = tipDescripcion;
-    }
 }

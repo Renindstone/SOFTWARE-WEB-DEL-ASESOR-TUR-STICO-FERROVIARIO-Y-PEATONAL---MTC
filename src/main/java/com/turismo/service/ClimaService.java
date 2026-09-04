@@ -25,21 +25,20 @@ public class ClimaService {
     }
 
     public Optional<PrevisionClima> buscarPorEstacionYFecha(Integer idEstacion, LocalDate fecha) {
-        return previsionClimaRepository.findByEstacion_EstIdEstacionAndCliFecha(idEstacion, fecha);
+        return previsionClimaRepository.findByEstacion_IdAndFecha(idEstacion, fecha);
     }
 
     @Transactional
     public PrevisionClima guardarOActualizar(Estacion estacion, LocalDate fecha, PrevisionClima datos) {
         PrevisionClima existente = previsionClimaRepository
-                .findByEstacion_EstIdEstacionAndCliFecha(estacion.getEstIdEstacion(), fecha)
+                .findByEstacion_IdAndFecha(estacion.getId(), fecha)
                 .orElseGet(PrevisionClima::new);
 
         existente.setEstacion(estacion);
-        existente.setCliFecha(fecha);
-        existente.setCliTemperaturaMinimaC(datos.getCliTemperaturaMinimaC());
-        existente.setCliTemperaturaMaximaC(datos.getCliTemperaturaMaximaC());
-        existente.setCliProbabilidadLluvia(datos.getCliProbabilidadLluvia());
-        existente.setCliEstadoClima(datos.getCliEstadoClima());
+        existente.setFecha(fecha);
+        existente.setTemperaturaC(datos.getTemperaturaC());
+        existente.setProbabilidadLluvia(datos.getProbabilidadLluvia());
+        existente.setEstadoClima(datos.getEstadoClima());
 
         return previsionClimaRepository.save(existente);
     }

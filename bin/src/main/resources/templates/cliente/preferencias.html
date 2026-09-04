@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Preferencias - MTC</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+<div th:replace="~{layout/nav :: nav}"></div>
+<main class="container">
+  <h1 class="h4 mb-3">Cuéntanos qué quieres visitar (RF-01)</h1>
+  <form method="post" th:action="@{/preferencias}" th:object="${preferencia}">
+    <div class="mb-3">
+      <label class="form-label">Estación ferroviaria de partida (RF-02)</label>
+      <select class="form-select" th:field="*{idEstacionOrigen}">
+        <option th:each="est : ${estaciones}" th:value="${est.estIdEstacion}" th:text="${est.estNombre}"></option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Tipo de turismo</label>
+      <div class="form-check" th:each="tipo : ${T(java.util.List).of('Aventura','Naturaleza','Cultural/Histórico')}">
+        <input class="form-check-input" type="checkbox" name="idsTipoTurismo">
+        <label class="form-check-label" th:text="${tipo}"></label>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Tiempo disponible (minutos)</label>
+      <input type="number" class="form-control" th:field="*{tiempoDisponibleMin}">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Dificultad</label>
+      <select class="form-select" th:field="*{dificultad}">
+        <option value="Baja">Baja</option>
+        <option value="Media">Media</option>
+        <option value="Alta">Alta</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Buscar zonas turísticas</button>
+  </form>
+</main>
+<div th:replace="~{layout/footer :: footer}"></div>
+</body>
+</html>

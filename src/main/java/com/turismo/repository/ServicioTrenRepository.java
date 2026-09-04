@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ServicioTrenRepository extends JpaRepository<ServicioTren, Integer> {
-    List<ServicioTren> findByEstacionOrigen_EstIdEstacion(Integer estIdEstacion);
+    List<ServicioTren> findByEstacionOrigen_Id(Integer estIdEstacion);
 }

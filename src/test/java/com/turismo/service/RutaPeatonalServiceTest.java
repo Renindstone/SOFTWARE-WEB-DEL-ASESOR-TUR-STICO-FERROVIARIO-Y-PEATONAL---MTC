@@ -31,17 +31,17 @@ class RutaPeatonalServiceTest {
 
     private Estacion crearEstacion(BigDecimal lat, BigDecimal lon) {
         Estacion estacion = new Estacion();
-        estacion.setEstIdEstacion(3);
-        estacion.setEstNombre("Ollantaytambo");
-        estacion.setEstLatitud(lat);
-        estacion.setEstLongitud(lon);
+        estacion.setId(3);
+        estacion.setNombre("Ollantaytambo");
+        estacion.setLatitud(lat);
+        estacion.setLongitud(lon);
         return estacion;
     }
 
     private ZonaTuristica crearZona(Estacion estacionCercana) {
         ZonaTuristica zona = new ZonaTuristica();
-        zona.setZonIdZona(1);
-        zona.setZonNombre("Fortaleza de Ollantaytambo");
+        zona.setId(1);
+        zona.setNombre("Fortaleza de Ollantaytambo");
         zona.setEstacionCercana(estacionCercana);
         return zona;
     }

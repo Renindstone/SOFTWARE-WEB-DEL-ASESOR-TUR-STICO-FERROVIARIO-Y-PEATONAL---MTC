@@ -40,22 +40,22 @@ public class PreferenciaService {
         if (idsTipoTurismo == null || idsTipoTurismo.isEmpty()) {
             return true;
         }
-        List<ZonaTipoTurismo> relaciones = zonaTipoTurismoRepository.findByZonaTuristica_ZonIdZona(zona.getZonIdZona());
+        List<ZonaTipoTurismo> relaciones = zonaTipoTurismoRepository.findByZonaTuristica_Id(zona.getId());
         return relaciones.stream()
-                .anyMatch(rel -> idsTipoTurismo.contains(rel.getTipoTurismo().getTipIdTipoTurismo()));
+                .anyMatch(rel -> idsTipoTurismo.contains(rel.getTipoTurismo().getId()));
     }
 
-    private ZonaResultadoDTO mapearADto(ZonaTuristica zona) {
+    private ZonaResultadoDTO mapearADto(ZonaTuristica zona) {     
         ZonaResultadoDTO dto = new ZonaResultadoDTO();
-        dto.setIdZona(zona.getZonIdZona());
-        dto.setNombre(zona.getZonNombre());
-        dto.setDescripcion(zona.getZonDescripcion());
-        dto.setCostoAproximado(zona.getZonCostoAprox());
-        dto.setCupoMaximoDiario(zona.getZonCupoMaximoDiario());
-        dto.setIdEstacionCercana(zona.getEstacionCercana().getEstIdEstacion());
-        dto.setTiposTurismo(zonaTipoTurismoRepository.findByZonaTuristica_ZonIdZona(zona.getZonIdZona())
+        dto.setIdZona(zona.getId());
+        dto.setNombre(zona.getNombre());
+        dto.setDescripcion(zona.getDescripcion());
+        dto.setCostoAproximado(zona.getCostoAprox());
+        dto.setCupoMaximoDiario(zona.getCupoMaximoDiario());
+        dto.setIdEstacionCercana(zona.getEstacionCercana().getId());
+        dto.setTiposTurismo(zonaTipoTurismoRepository.findByZonaTuristica_Id(zona.getId())
                 .stream()
-                .map(rel -> rel.getTipoTurismo().getTipNombre())
+                .map(rel -> rel.getTipoTurismo().getNombre()) 
                 .collect(Collectors.toList()));
         return dto;
     }

@@ -1,102 +1,42 @@
 package com.turismo.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "usuario")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "UsuIdUsuario")
-    private Integer usuIdUsuario;
+    private Integer id;
 
     @Column(name = "UsuNombreUsuario", length = 50, nullable = false, unique = true)
-    private String usuNombreUsuario;
+    private String nombreUsuario;
 
     @Column(name = "UsuContrasenia", length = 100, nullable = false)
-    private String usuContrasenia;
+    private String contrasenia;
 
     @Column(name = "UsuNombre", length = 50, nullable = false)
-    private String usuNombre;
+    private String nombre;
 
     @Column(name = "UsuApellidos", length = 50, nullable = false)
-    private String usuApellidos;
+    private String apellidos;
 
     @Column(name = "UsuEmail", length = 50, nullable = false, unique = true)
-    private String usuEmail;
+    private String email;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UsuIdRol", nullable = false)
     private Rol rol;
 
     @Column(name = "UsuEstado", length = 10, nullable = false)
-    private String usuEstado = "Activo";
+    private String estado = "Activo";
 
-    public Usuario() {
-    }
-
-    public Integer getUsuIdUsuario() {
-        return usuIdUsuario;
-    }
-
-    public void setUsuIdUsuario(Integer usuIdUsuario) {
-        this.usuIdUsuario = usuIdUsuario;
-    }
-
-    public String getUsuNombreUsuario() {
-        return usuNombreUsuario;
-    }
-
-    public void setUsuNombreUsuario(String usuNombreUsuario) {
-        this.usuNombreUsuario = usuNombreUsuario;
-    }
-
-    public String getUsuContrasenia() {
-        return usuContrasenia;
-    }
-
-    public void setUsuContrasenia(String usuContrasenia) {
-        this.usuContrasenia = usuContrasenia;
-    }
-
-    public String getUsuNombre() {
-        return usuNombre;
-    }
-
-    public void setUsuNombre(String usuNombre) {
-        this.usuNombre = usuNombre;
-    }
-
-    public String getUsuApellidos() {
-        return usuApellidos;
-    }
-
-    public void setUsuApellidos(String usuApellidos) {
-        this.usuApellidos = usuApellidos;
-    }
-
-    public String getUsuEmail() {
-        return usuEmail;
-    }
-
-    public void setUsuEmail(String usuEmail) {
-        this.usuEmail = usuEmail;
-    }
-
-    public Rol getRol() {
-        return rol;
-    }
-
-    public void setRol(Rol rol) {
-        this.rol = rol;
-    }
-
-    public String getUsuEstado() {
-        return usuEstado;
-    }
-
-    public void setUsuEstado(String usuEstado) {
-        this.usuEstado = usuEstado;
-    }
 }

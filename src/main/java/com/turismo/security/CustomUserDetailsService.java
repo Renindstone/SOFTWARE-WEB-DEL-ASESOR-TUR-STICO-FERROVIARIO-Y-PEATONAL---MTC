@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,16 +27,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepository.findByUsuNombreUsuario(username)
+        Usuario usuario = usuarioRepository.findByNombreUsuario(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
 
-        boolean habilitado = "Activo".equalsIgnoreCase(usuario.getUsuEstado());
+        boolean habilitado = "Activo".equalsIgnoreCase(usuario.getEstado());
 
-        return User.withUsername(usuario.getUsuNombreUsuario())
-                .password(usuario.getUsuContrasenia())
+        return User.withUsername(usuario.getNombreUsuario())
+                .password(usuario.getContrasenia())
                 .disabled(!habilitado)
-                .authorities(List.of(new SimpleGrantedAuthority("ROLE_" + usuario.getRol().getRolNombreRol())))
+                .authorities(List.of(new SimpleGrantedAuthority("ROLE_" + usuario.getRol().getNombre())))
                 .build();
     }
 }

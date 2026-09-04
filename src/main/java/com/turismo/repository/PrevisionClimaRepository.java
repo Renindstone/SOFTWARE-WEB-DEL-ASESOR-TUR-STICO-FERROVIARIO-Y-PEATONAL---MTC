@@ -6,5 +6,5 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public interface PrevisionClimaRepository extends JpaRepository<PrevisionClima, Integer> {
-    Optional<PrevisionClima> findByEstacion_EstIdEstacionAndCliFecha(Integer estIdEstacion, LocalDate cliFecha);
+    Optional<PrevisionClima> findByEstacion_IdAndFecha(Integer idEstacion, LocalDate fecha);
 }

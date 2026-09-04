@@ -1,6 +1,9 @@
 package com.turismo.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Entidad intermedia que resuelve la relacion N:M entre ZonaTuristica y
@@ -10,12 +13,15 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "zona_tipo_turismo",
         uniqueConstraints = @UniqueConstraint(columnNames = {"ZtiIdZonaTuristica", "ZtiIdTipoTurismo"}))
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ZonaTipoTurismo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ZtiIdZonaTipo")
-    private Integer ztiIdZonaTipo;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ZtiIdZonaTuristica", nullable = false)
@@ -25,30 +31,4 @@ public class ZonaTipoTurismo {
     @JoinColumn(name = "ZtiIdTipoTurismo", nullable = false)
     private TipoTurismo tipoTurismo;
 
-    public ZonaTipoTurismo() {
-    }
-
-    public Integer getZtiIdZonaTipo() {
-        return ztiIdZonaTipo;
-    }
-
-    public void setZtiIdZonaTipo(Integer ztiIdZonaTipo) {
-        this.ztiIdZonaTipo = ztiIdZonaTipo;
-    }
-
-    public ZonaTuristica getZonaTuristica() {
-        return zonaTuristica;
-    }
-
-    public void setZonaTuristica(ZonaTuristica zonaTuristica) {
-        this.zonaTuristica = zonaTuristica;
-    }
-
-    public TipoTurismo getTipoTurismo() {
-        return tipoTurismo;
-    }
-
-    public void setTipoTurismo(TipoTurismo tipoTurismo) {
-        this.tipoTurismo = tipoTurismo;
-    }
 }

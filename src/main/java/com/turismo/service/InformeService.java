@@ -59,22 +59,20 @@ public class InformeService {
 
         RutaCalculadaDTO ruta = rutaPeatonalService.calcularRutaPeatonalIdaVuelta(origen, destino);
 
-        Optional<PrevisionClima> clima = climaService.buscarPorEstacionYFecha(origen.getEstIdEstacion(), fechaVisita);
+        Optional<PrevisionClima> clima = climaService.buscarPorEstacionYFecha(origen.getId(), fechaVisita);
 
         InformeConsolidadoDTO informe = new InformeConsolidadoDTO();
         informe.setCodigo(generarCodigo());
         informe.setFechaVisita(fechaVisita);
-        informe.setEstacionOrigen(origen.getEstNombre());
-        informe.setZonaDestino(destino.getZonNombre());
+        informe.setEstacionOrigen(origen.getNombre());
+        informe.setZonaDestino(destino.getNombre());
         informe.setRuta(ruta);
         clima.ifPresent(c -> {
-            informe.setTemperaturaMinimaC(c.getCliTemperaturaMinimaC());
-            informe.setTemperaturaMaximaC(c.getCliTemperaturaMaximaC());
-            informe.setProbabilidadLluvia(c.getCliProbabilidadLluvia());
-            informe.setEstadoClima(c.getCliEstadoClima());
+            informe.setProbabilidadLluvia(c.getProbabilidadLluvia());
+            informe.setEstadoClima(c.getEstadoClima());
         });
         if (servicioTren != null) {
-            informe.setTarifaTren(servicioTren.getSerTarifa());
+            informe.setTarifaTren(servicioTren.getTarifa());
         }
         informe.setTotalEstimado(calcularTotalEstimado(destino, servicioTren));
 
@@ -83,11 +81,11 @@ public class InformeService {
 
     private BigDecimal calcularTotalEstimado(ZonaTuristica destino, ServicioTren servicioTren) {
         BigDecimal total = BigDecimal.ZERO;
-        if (destino.getZonCostoAprox() != null) {
-            total = total.add(destino.getZonCostoAprox());
+        if (destino.getCostoAprox() != null) {
+            total = total.add(destino.getCostoAprox());
         }
-        if (servicioTren != null && servicioTren.getSerTarifa() != null) {
-            total = total.add(servicioTren.getSerTarifa());
+        if (servicioTren != null && servicioTren.getTarifa() != null) {
+            total = total.add(servicioTren.getTarifa());
         }
         return total;
     }

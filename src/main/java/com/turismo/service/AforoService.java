@@ -31,26 +31,26 @@ public class AforoService {
      */
     @Transactional
     public boolean validarAforoDisponible(ZonaTuristica zona, LocalDate fecha) {
-        if (zona.getZonCupoMaximoDiario() == null) {
+        if (zona.getCupoMaximoDiario() == null) {
             return true;
         }
 
         ControlAforo control = controlAforoRepository
-                .findByZona_ZonIdZonaAndAfoFecha(zona.getZonIdZona(), fecha)
+                .findByZona_IdAndFecha(zona.getId(), fecha)
                 .orElseGet(() -> {
                     ControlAforo nuevo = new ControlAforo();
                     nuevo.setZona(zona);
-                    nuevo.setAfoFecha(fecha);
-                    nuevo.setAfoCupoUtilizado(0);
+                    nuevo.setFecha(fecha);
+                    nuevo.setCupoUtilizado(0);
                     return nuevo;
                 });
 
-        if (control.getAfoCupoUtilizado() >= zona.getZonCupoMaximoDiario()) {
+        if (control.getCupoUtilizado() >= zona.getCupoMaximoDiario()) {
             throw new AforoCompletoException(
                     "El aforo de la zona para la fecha seleccionada ya fue alcanzado");
         }
 
-        control.setAfoCupoUtilizado(control.getAfoCupoUtilizado() + 1);
+        control.setCupoUtilizado(control.getCupoUtilizado() + 1);
         controlAforoRepository.save(control);
         return true;
     }

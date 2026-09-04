@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ZonaTuristicaRepository extends JpaRepository<ZonaTuristica, Integer> {
-    List<ZonaTuristica> findByEstacionCercana_EstIdEstacion(Integer estIdEstacion);
-    List<ZonaTuristica> findByZonEstado(String zonEstado);
+    List<ZonaTuristica> findByEstacionCercana_Id(Integer estIdEstacion);
+    List<ZonaTuristica> findByEstado(String estado);
 }

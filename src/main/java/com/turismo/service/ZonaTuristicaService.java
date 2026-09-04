@@ -33,11 +33,11 @@ public class ZonaTuristicaService {
     }
 
     public List<ZonaTuristica> listarActivas() {
-        return zonaTuristicaRepository.findByZonEstado("Activa");
+        return zonaTuristicaRepository.findByEstado("Activa");
     }
 
     public List<ZonaTuristica> listarPorEstacion(Integer idEstacionCercana) {
-        return zonaTuristicaRepository.findByEstacionCercana_EstIdEstacion(idEstacionCercana);
+        return zonaTuristicaRepository.findByEstacionCercana_Id(idEstacionCercana);
     }
 
     public Optional<ZonaTuristica> buscarPorId(Integer id) {
@@ -54,7 +54,7 @@ public class ZonaTuristicaService {
     @Transactional
     public void asignarTiposTurismo(ZonaTuristica zona, List<Integer> idsTipoTurismo) {
         zonaTipoTurismoRepository.deleteAll(
-                zonaTipoTurismoRepository.findByZonaTuristica_ZonIdZona(zona.getZonIdZona()));
+                zonaTipoTurismoRepository.findByZonaTuristica_Id(zona.getId()));
 
         for (Integer idTipo : idsTipoTurismo) {
             TipoTurismo tipo = tipoTurismoRepository.findById(idTipo)

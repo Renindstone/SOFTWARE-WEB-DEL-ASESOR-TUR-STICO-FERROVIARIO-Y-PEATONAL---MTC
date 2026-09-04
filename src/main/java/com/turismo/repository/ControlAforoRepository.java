@@ -6,5 +6,5 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public interface ControlAforoRepository extends JpaRepository<ControlAforo, Integer> {
-    Optional<ControlAforo> findByZona_ZonIdZonaAndAfoFecha(Integer zonIdZona, LocalDate afoFecha);
+    Optional<ControlAforo> findByZona_IdAndFecha(Integer idZona, LocalDate fecha);
 }

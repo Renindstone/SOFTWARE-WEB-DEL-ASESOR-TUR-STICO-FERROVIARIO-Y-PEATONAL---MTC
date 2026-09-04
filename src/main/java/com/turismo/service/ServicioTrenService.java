@@ -23,7 +23,7 @@ public class ServicioTrenService {
     }
 
     public List<ServicioTren> listarPorEstacionOrigen(Integer idEstacionOrigen) {
-        return servicioTrenRepository.findByEstacionOrigen_EstIdEstacion(idEstacionOrigen);
+        return servicioTrenRepository.findByEstacionOrigen_Id(idEstacionOrigen);
     }
 
     public List<ServicioTren> listarTodos() {
@@ -32,7 +32,7 @@ public class ServicioTrenService {
 
     /** CB-05/CB-06: valida la tarifa (PeruRailClient.validarTarifaPeruRail) antes de persistir. */
     public ServicioTren guardar(ServicioTren servicioTren) {
-        peruRailClient.validarTarifaPeruRail(servicioTren.getSerTarifa());
+        peruRailClient.validarTarifaPeruRail(servicioTren.getTarifa());
         return servicioTrenRepository.save(servicioTren);
     }
 }

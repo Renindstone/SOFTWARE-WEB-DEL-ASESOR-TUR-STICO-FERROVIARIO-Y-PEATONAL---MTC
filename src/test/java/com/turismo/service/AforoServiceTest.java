@@ -34,9 +34,9 @@ class AforoServiceTest {
 
     private ZonaTuristica crearZona(int cupoMaximo) {
         ZonaTuristica zona = new ZonaTuristica();
-        zona.setZonIdZona(1);
-        zona.setZonNombre("Fortaleza de Ollantaytambo");
-        zona.setZonCupoMaximoDiario(cupoMaximo);
+        zona.setId(1);
+        zona.setNombre("Fortaleza de Ollantaytambo");
+        zona.setCupoMaximoDiario(cupoMaximo);
         return zona;
     }
 
@@ -46,17 +46,17 @@ class AforoServiceTest {
         LocalDate fecha = LocalDate.of(2026, 8, 30);
         ControlAforo control = new ControlAforo();
         control.setZona(zona);
-        control.setAfoFecha(fecha);
-        control.setAfoCupoUtilizado(320);
+        control.setFecha(fecha);
+        control.setCupoUtilizado(320);
 
-        when(controlAforoRepository.findByZona_ZonIdZonaAndAfoFecha(1, fecha))
+        when(controlAforoRepository.findByZona_IdAndFecha(1, fecha))
                 .thenReturn(Optional.of(control));
         when(controlAforoRepository.save(any(ControlAforo.class))).thenAnswer(inv -> inv.getArgument(0));
 
         boolean resultado = aforoService.validarAforoDisponible(zona, fecha);
 
         assertThat(resultado).isTrue();
-        assertThat(control.getAfoCupoUtilizado()).isEqualTo(321);
+        assertThat(control.getCupoUtilizado()).isEqualTo(321);
     }
 
     @Test
@@ -65,15 +65,15 @@ class AforoServiceTest {
         LocalDate fecha = LocalDate.of(2026, 8, 30);
         ControlAforo control = new ControlAforo();
         control.setZona(zona);
-        control.setAfoFecha(fecha);
-        control.setAfoCupoUtilizado(500);
+        control.setFecha(fecha);
+        control.setCupoUtilizado(500);
 
-        when(controlAforoRepository.findByZona_ZonIdZonaAndAfoFecha(1, fecha))
+        when(controlAforoRepository.findByZona_IdAndFecha(1, fecha))
                 .thenReturn(Optional.of(control));
 
         assertThatThrownBy(() -> aforoService.validarAforoDisponible(zona, fecha))
                 .isInstanceOf(AforoCompletoException.class)
                 .hasMessageContaining("aforo");
-        assertThat(control.getAfoCupoUtilizado()).isEqualTo(500);
+        assertThat(control.getCupoUtilizado()).isEqualTo(500);
     }
 }

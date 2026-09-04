@@ -1,35 +1,23 @@
 package com.turismo.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "rol")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Rol {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RolIdRol")
-    private Integer rolIdRol;
+    private Integer id;
 
     @Column(name = "RolNombreRol", length = 30, nullable = false, unique = true)
-    private String rolNombreRol;
+    private String nombre;
 
-    public Rol() {
-    }
-
-    public Integer getRolIdRol() {
-        return rolIdRol;
-    }
-
-    public void setRolIdRol(Integer rolIdRol) {
-        this.rolIdRol = rolIdRol;
-    }
-
-    public String getRolNombreRol() {
-        return rolNombreRol;
-    }
-
-    public void setRolNombreRol(String rolNombreRol) {
-        this.rolNombreRol = rolNombreRol;
-    }
 }

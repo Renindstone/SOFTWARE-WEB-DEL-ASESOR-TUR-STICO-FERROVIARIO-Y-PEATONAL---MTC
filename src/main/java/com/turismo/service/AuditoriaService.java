@@ -24,16 +24,16 @@ public class AuditoriaService {
     public AuditoriaLog registrarAuditoria(String usuario, String operacion, String tablaAfectada,
                                             String valorAnterior, String valorNuevo) {
         AuditoriaLog log = new AuditoriaLog();
-        log.setAudUsuario(usuario);
-        log.setAudOperacion(operacion);
-        log.setAudTablaAfectada(tablaAfectada);
-        log.setAudValorAnterior(valorAnterior);
-        log.setAudValorNuevo(valorNuevo);
+        log.setUsuario(usuario);
+        log.setOperacion(operacion);
+        log.setTablaAfectada(tablaAfectada);
+        log.setValorAnterior(valorAnterior);
+        log.setValorNuevo(valorNuevo);
         return auditoriaLogRepository.save(log);
     }
 
     public List<AuditoriaLog> listarPorTabla(String tablaAfectada) {
-        return auditoriaLogRepository.findByAudTablaAfectada(tablaAfectada);
+        return auditoriaLogRepository.findByTablaAfectada(tablaAfectada);
     }
 
     public List<AuditoriaLog> listarTodo() {

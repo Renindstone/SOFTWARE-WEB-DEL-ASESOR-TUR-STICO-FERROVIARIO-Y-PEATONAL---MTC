@@ -19,7 +19,7 @@ public class EstacionService {
 
     /** RF-02: excluye del listado las estaciones marcadas como inactivas. */
     public List<Estacion> listarActivas() {
-        return estacionRepository.findByEstEstado("Activa");
+        return estacionRepository.findByEstado("Activa");
     }
 
     public List<Estacion> listarTodas() {

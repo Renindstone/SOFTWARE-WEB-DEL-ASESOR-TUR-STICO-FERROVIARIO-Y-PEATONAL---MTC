@@ -37,9 +37,9 @@ class AuditoriaServiceTest {
         ArgumentCaptor<AuditoriaLog> captor = ArgumentCaptor.forClass(AuditoriaLog.class);
         verify(auditoriaLogRepository).save(captor.capture());
 
-        assertThat(captor.getValue().getAudOperacion()).isEqualTo("UPDATE");
-        assertThat(captor.getValue().getAudValorAnterior()).isNotNull();
-        assertThat(captor.getValue().getAudValorNuevo()).isNotNull();
-        assertThat(resultado.getAudTablaAfectada()).isEqualTo("estacion");
+        assertThat(captor.getValue().getOperacion()).isEqualTo("UPDATE");
+        assertThat(captor.getValue().getValorAnterior()).isNotNull();
+        assertThat(captor.getValue().getValorNuevo()).isNotNull();
+        assertThat(resultado.getTablaAfectada()).isEqualTo("estacion");
     }
 }

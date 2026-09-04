@@ -1,6 +1,10 @@
 package com.turismo.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 /**
@@ -10,88 +14,33 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "auditoria_log")
+@Data // getters y setters
+@AllArgsConstructor // constructor con todos los argumentos
+@NoArgsConstructor // constructor sin argumentos
 public class AuditoriaLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "AudIdLog")
-    private Integer audIdLog;
+    private Integer id;
 
     @Column(name = "AudFecha", nullable = false)
-    private LocalDateTime audFecha = LocalDateTime.now();
+    private LocalDateTime fecha = LocalDateTime.now();
 
     @Column(name = "AudUsuario", length = 50, nullable = false)
-    private String audUsuario;
+    private String usuario;
 
     /** Valores permitidos: INSERT, UPDATE, DELETE, SYNC. */
     @Column(name = "AudOperacion", length = 20, nullable = false)
-    private String audOperacion;
+    private String operacion;
 
     @Column(name = "AudTablaAfectada", length = 50, nullable = false)
-    private String audTablaAfectada;
+    private String tablaAfectada;
 
     @Column(name = "AudValorAnterior", length = 500)
-    private String audValorAnterior;
+    private String valorAnterior;
 
     @Column(name = "AudValorNuevo", length = 500)
-    private String audValorNuevo;
+    private String valorNuevo;
 
-    public AuditoriaLog() {
-    }
-
-    public Integer getAudIdLog() {
-        return audIdLog;
-    }
-
-    public void setAudIdLog(Integer audIdLog) {
-        this.audIdLog = audIdLog;
-    }
-
-    public LocalDateTime getAudFecha() {
-        return audFecha;
-    }
-
-    public void setAudFecha(LocalDateTime audFecha) {
-        this.audFecha = audFecha;
-    }
-
-    public String getAudUsuario() {
-        return audUsuario;
-    }
-
-    public void setAudUsuario(String audUsuario) {
-        this.audUsuario = audUsuario;
-    }
-
-    public String getAudOperacion() {
-        return audOperacion;
-    }
-
-    public void setAudOperacion(String audOperacion) {
-        this.audOperacion = audOperacion;
-    }
-
-    public String getAudTablaAfectada() {
-        return audTablaAfectada;
-    }
-
-    public void setAudTablaAfectada(String audTablaAfectada) {
-        this.audTablaAfectada = audTablaAfectada;
-    }
-
-    public String getAudValorAnterior() {
-        return audValorAnterior;
-    }
-
-    public void setAudValorAnterior(String audValorAnterior) {
-        this.audValorAnterior = audValorAnterior;
-    }
-
-    public String getAudValorNuevo() {
-        return audValorNuevo;
-    }
-
-    public void setAudValorNuevo(String audValorNuevo) {
-        this.audValorNuevo = audValorNuevo;
-    }
 }

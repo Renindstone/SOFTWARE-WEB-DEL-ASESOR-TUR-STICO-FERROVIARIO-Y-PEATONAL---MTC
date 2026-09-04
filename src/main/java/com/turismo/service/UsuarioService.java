@@ -28,7 +28,7 @@ public class UsuarioService {
     }
 
     public Usuario registrar(Usuario usuario) {
-        usuario.setUsuContrasenia(passwordEncoder.encode(usuario.getUsuContrasenia()));
+        usuario.setContrasenia(passwordEncoder.encode(usuario.getContrasenia()));
         return usuarioRepository.save(usuario);
     }
 }
