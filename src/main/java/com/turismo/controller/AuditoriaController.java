@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /** RF-15/RNF-07: panel de auditoria para gestores del MTC (ADMIN_MTC). */
 @Controller
@@ -17,9 +18,12 @@ public class AuditoriaController {
         this.auditoriaService = auditoriaService;
     }
 
-    @GetMapping()
-    public String listar(Model model) {
-        model.addAttribute("registros", auditoriaService.listarTodo());
+    @GetMapping
+    public String listar(@RequestParam(required = false) String tabla, Model model) {
+        model.addAttribute("registros", tabla == null || tabla.isBlank()
+                ? auditoriaService.listarTodo()
+                : auditoriaService.listarPorTabla(tabla));
+        model.addAttribute("tablaFiltrada", tabla);
         return "admin/auditoria";
     }
 }

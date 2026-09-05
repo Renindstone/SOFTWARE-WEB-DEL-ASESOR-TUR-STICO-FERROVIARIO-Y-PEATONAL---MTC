@@ -1,77 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Estaciones - MTC</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" th:href="@{/css/estilos.css}">
+<!--
+  RF-11 (CU-05 / CN-06): listado de estaciones de PeruRail en modo de solo
+  lectura. No hay acciones de edición ni de eliminación: las estaciones las
+  mantiene la sincronización con PeruRail (RF-13).
+-->
+<head th:replace="~{layout/base :: head('Estaciones')}"></head>
 
-  <style>
-    body{
-      font-family:'Manrope', system-ui, sans-serif;
-      background:#F6F4EF;
-    }
-
-    .page-title{ color:#14453D; letter-spacing:-0.01em; }
-    .page-sub{ color:#6B7568; }
-
-    .section-card{
-      border:none;
-      border-radius:16px;
-      border-top:4px solid #C89B3C;
-      box-shadow:0 14px 32px -14px rgba(20,69,61,.20);
-    }
-
-    .table-mtc thead{ background:#14453D; color:#fff; }
-    .table-mtc thead th{ font-weight:600; font-size:.82rem; border:none; white-space:nowrap; }
-    .table-mtc tbody td{ vertical-align:middle; font-size:.9rem; }
-    .table-mtc tbody tr:hover{ background:#FBF8F1; }
-
-    .est-name{ display:flex; align-items:center; gap:.5rem; font-weight:600; color:#14453D; }
-    .est-name i{ color:#C89B3C; }
-
-    .code-pill{
-      font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
-      background:#F0EEE6;
-      color:#4A5348;
-      border-radius:6px;
-      padding:.15rem .5rem;
-      font-size:.8rem;
-    }
-
-    .badge-activa{ background:#E4F2E9; color:#1F6B45; }
-    .badge-inactiva{ background:#FBE8E6; color:#B3382C; }
-    .badge-mantenimiento{ background:#FBF1DD; color:#A67C2E; }
-
-    .readonly-note{
-      background:#FBF8F1;
-      border:1px solid #EAD9AE;
-      color:#A67C2E;
-      border-radius:10px;
-      padding:.6rem 1rem;
-      font-size:.85rem;
-      display:flex;
-      align-items:center;
-      gap:.5rem;
-    }
-  </style>
-</head>
 <body>
 <div th:replace="~{layout/nav :: nav}"></div>
 
 <main class="container py-4" style="max-width: 1000px;">
 
-  <div class="mb-3">
-    <h1 class="h4 fw-bold page-title mb-1">Listado de estaciones</h1>
-    <p class="page-sub mb-0">Estaciones ferroviarias registradas en el sistema.</p>
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+      <h1 class="h4 fw-bold page-title mb-1">Listado de estaciones</h1>
+      <p class="page-sub mb-0">Estaciones ferroviarias sincronizadas desde PeruRail.</p>
+    </div>
+    <a class="btn btn-mtc-outline btn-sm"
+       th:href="@{/estaciones(incluirInactivas=${!incluirInactivas})}"
+       th:text="${incluirInactivas} ? 'Ver solo activas' : 'Incluir inactivas'">Incluir inactivas</a>
   </div>
 
   <div class="readonly-note mb-3">
     <i class="bi bi-info-circle-fill"></i>
-    <span>Este listado es de solo lectura.</span>
+    <span>Este listado es de solo lectura. Úsalo para asociar zonas turísticas a su estación cercana.</span>
   </div>
 
   <div class="card section-card">
@@ -83,23 +36,34 @@
               <th>Código</th>
               <th>Nombre</th>
               <th>Ciudad</th>
+              <th>Latitud</th>
+              <th>Longitud</th>
+              <th>Altitud</th>
               <th>Estado</th>
             </tr>
           </thead>
           <tbody>
             <tr th:each="est : ${estaciones}">
-              <td><span class="code-pill" th:text="${est.Codigo}"></span></td>
+              <td><span class="code-pill" th:text="${est.codigo}">COD</span></td>
               <td>
                 <span class="est-name">
                   <i class="bi bi-train-front"></i>
-                  <span th:text="${est.Nombre}"></span>
+                  <span th:text="${est.nombre}">Estación</span>
                 </span>
               </td>
-              <td th:text="${est.Ciudad}"></td>
+              <td th:text="${est.ciudad}">Ciudad</td>
+              <td th:text="${est.latitud}">0</td>
+              <td th:text="${est.longitud}">0</td>
+              <td th:text="${est.altitud != null} ? ${est.altitud} + ' m' : '—'">0 m</td>
               <td>
                 <span class="badge"
-                      th:classappend="${est.Estado == 'Activa'} ? 'badge-activa' : (${est.Estado == 'Inactiva'} ? 'badge-inactiva' : 'badge-mantenimiento')"
-                      th:text="${est.Estado}"></span>
+                      th:classappend="${est.estado == 'Activa'} ? 'badge-activa' : 'badge-inactiva'"
+                      th:text="${est.estado}">Activa</span>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(estaciones)}">
+              <td colspan="7" class="text-center page-sub py-4">
+                No hay estaciones registradas. La sincronización con PeruRail aún no ha traído datos.
               </td>
             </tr>
           </tbody>
@@ -111,5 +75,7 @@
 </main>
 
 <div th:replace="~{layout/footer :: footer}"></div>
+<div th:replace="~{layout/base :: scripts}"></div>
 </body>
+
 </html>

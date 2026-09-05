@@ -8,11 +8,20 @@ import java.math.BigDecimal;
  */
 public class RutaCalculadaDTO {
 
+    private String nombre;
     private BigDecimal distanciaKm;
     private Integer tiempoEstimadoMin;
     /** Baja, Media, Alta. */
     private String dificultad;
     private Boolean esIdaVuelta = Boolean.TRUE;
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
     public BigDecimal getDistanciaKm() {
         return distanciaKm;

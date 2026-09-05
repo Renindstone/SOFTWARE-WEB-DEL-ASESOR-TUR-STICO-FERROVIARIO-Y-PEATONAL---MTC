@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<!--
+  RF-09: listado de estaciones con las zonas turísticas que tienen asignadas.
+  Las filas llegan ordenadas por estación desde el repositorio, de modo que la
+  vista solo agrupa visualmente repitiendo la cabecera cuando cambia.
+-->
+<head th:replace="~{layout/base :: head('Zonas por estación')}"></head>
+
+<body>
+<div th:replace="~{layout/nav :: nav}"></div>
+
+<main class="container py-4" style="max-width: 1000px;">
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <div>
+      <h1 class="h4 fw-bold page-title mb-1">Zonas turísticas por estación</h1>
+      <p class="page-sub mb-0">Cobertura actual del catálogo de Travel Group Perú.</p>
+    </div>
+    <button type="button" class="btn btn-mtc-outline btn-sm d-print-none" onclick="window.print();">
+      <i class="bi bi-printer me-2"></i>Imprimir
+    </button>
+  </div>
+
+  <div class="card section-card">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-mtc table-sm mb-0">
+          <thead>
+            <tr>
+              <th>Estación</th>
+              <th>Ciudad</th>
+              <th>Zona turística</th>
+              <th>Tipos de turismo</th>
+              <th>Cupo diario</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="z : ${zonas}">
+              <td>
+                <span class="est-name">
+                  <i class="bi bi-train-front"></i>
+                  <span th:text="${z.estacionCercana.nombre}">Estación</span>
+                </span>
+              </td>
+              <td th:text="${z.estacionCercana.ciudad}">Ciudad</td>
+              <td>
+                <span class="zona-name">
+                  <i class="bi bi-signpost-split"></i>
+                  <span th:text="${z.nombre}">Zona</span>
+                </span>
+              </td>
+              <td>
+                <span class="tipo-pill me-1" th:each="rel : ${z.tiposTurismo}"
+                      th:text="${rel.tipoTurismo.nombre}">Tipo</span>
+              </td>
+              <td>
+                <span th:if="${z.cupoMaximoDiario != null}" th:text="${z.cupoMaximoDiario}">0</span>
+                <span class="page-sub small" th:if="${z.cupoMaximoDiario == null}">Sin control</span>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(zonas)}">
+              <td colspan="5" class="text-center page-sub py-4">
+                No hay zonas turísticas activas asignadas a ninguna estación.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+
+</html>

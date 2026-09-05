@@ -1,6 +1,8 @@
 package com.turismo.dto;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
@@ -10,18 +12,19 @@ import java.util.List;
  */
 public class PreferenciaDTO {
 
-    /** Ids de TipoTurismo seleccionados: Aventura, Naturaleza, Cultural/Historico. */
-    @NotNull
+    /** Ids de TipoTurismo seleccionados de la tabla parametrica (RNF-06). */
+    @NotEmpty(message = "Debe seleccionar al menos un tipo de turismo")
     private List<Integer> idsTipoTurismo;
 
-    @NotNull
+    @NotNull(message = "Indique el tiempo disponible para la caminata")
+    @Min(value = 1, message = "El tiempo disponible debe ser mayor a cero")
     private Integer tiempoDisponibleMin;
 
-    /** Baja, Media, Alta. */
-    @NotBlank
+    /** Baja, Media, Alta (RutDificultad del diccionario de datos). */
+    @NotBlank(message = "Seleccione el nivel de dificultad")
     private String dificultad;
 
-    @NotNull
+    @NotNull(message = "Seleccione la estación ferroviaria de partida")
     private Integer idEstacionOrigen;
 
     public List<Integer> getIdsTipoTurismo() {

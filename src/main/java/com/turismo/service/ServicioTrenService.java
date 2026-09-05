@@ -4,35 +4,73 @@ import com.turismo.integration.perurail.PeruRailClient;
 import com.turismo.model.ServicioTren;
 import com.turismo.repository.ServicioTrenRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * RF-12: mantenimiento de horarios y precios de los servicios de tren
- * (administrador de PeruRail/MTC). Respalda la vista admin/servicios-tren.html.
+ * (administrador de PeruRail/MTC). Respalda la vista admin/servicios-tren.html
+ * y deja traza de cada cambio en AuditoriaLog (RF-15/RNF-07).
  */
 @Service
 public class ServicioTrenService {
 
+    private static final String TABLA_AUDITADA = "servicio_tren";
+
     private final ServicioTrenRepository servicioTrenRepository;
     private final PeruRailClient peruRailClient;
+    private final AuditoriaService auditoriaService;
 
-    public ServicioTrenService(ServicioTrenRepository servicioTrenRepository, PeruRailClient peruRailClient) {
+    public ServicioTrenService(ServicioTrenRepository servicioTrenRepository,
+                                PeruRailClient peruRailClient,
+                                AuditoriaService auditoriaService) {
         this.servicioTrenRepository = servicioTrenRepository;
         this.peruRailClient = peruRailClient;
+        this.auditoriaService = auditoriaService;
     }
 
     public List<ServicioTren> listarPorEstacionOrigen(Integer idEstacionOrigen) {
         return servicioTrenRepository.findByEstacionOrigen_Id(idEstacionOrigen);
     }
 
+    /** RF-07: servicios que llegan a la estacion de partida, ordenados por tarifa. */
+    public List<ServicioTren> listarHaciaEstacion(Integer idEstacionDestino) {
+        return servicioTrenRepository.listarHaciaEstacion(idEstacionDestino);
+    }
+
     public List<ServicioTren> listarTodos() {
-        return servicioTrenRepository.findAll();
+        return servicioTrenRepository.listarConEstaciones();
+    }
+
+    public Optional<ServicioTren> buscarPorId(Integer id) {
+        return servicioTrenRepository.buscarConEstaciones(id);
     }
 
     /** CB-05/CB-06: valida la tarifa (PeruRailClient.validarTarifaPeruRail) antes de persistir. */
-    public ServicioTren guardar(ServicioTren servicioTren) {
+    @Transactional
+    public ServicioTren guardar(ServicioTren servicioTren, String usuario) {
         peruRailClient.validarTarifaPeruRail(servicioTren.getTarifa());
-        return servicioTrenRepository.save(servicioTren);
+
+        boolean esAlta = servicioTren.getId() == null;
+        String valorAnterior = esAlta ? null
+                : servicioTrenRepository.findById(servicioTren.getId()).map(this::describir).orElse(null);
+
+        ServicioTren guardado = servicioTrenRepository.save(servicioTren);
+
+        auditoriaService.registrarAuditoria(usuario, esAlta ? "INSERT" : "UPDATE", TABLA_AUDITADA,
+                valorAnterior, describir(guardado));
+
+        return guardado;
+    }
+
+    private String describir(ServicioTren servicio) {
+        return "SerIdEstacionOrigen=" + servicio.getEstacionOrigen().getId()
+                + "; SerIdEstacionDestino=" + servicio.getEstacionDestino().getId()
+                + "; SerHorarioSalida=" + servicio.getHorarioSalida()
+                + "; SerHorarioLlegada=" + servicio.getHorarioLlegada()
+                + "; SerTiempoTransitoMin=" + servicio.getTiempoTransitoMin()
+                + "; SerTarifa=" + servicio.getTarifa();
     }
 }

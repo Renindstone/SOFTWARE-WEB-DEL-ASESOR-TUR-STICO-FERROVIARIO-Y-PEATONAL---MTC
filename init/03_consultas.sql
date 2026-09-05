@@ -14,6 +14,7 @@
 --   SELECT * FROM vw_zonas_turisticas;
 --   SELECT * FROM fn_buscar_zonas('CUS-OLL', 'Naturaleza');
 --   SELECT * FROM fn_verificar_aforo('Llaqta de Machu Picchu', '2026-09-01');
+--   SELECT * FROM fn_verificar_rutas();
 --   SELECT * FROM fn_resumen_bd();
 -- ============================================================================
 
@@ -33,6 +34,8 @@ SELECT
     z."ZonNombre"                                       AS zona,
     e."EstNombre"                                       AS estacion,
     e."EstCiudad"                                       AS ciudad,
+    z."ZonLatitud"                                      AS latitud_zona,
+    z."ZonLongitud"                                     AS longitud_zona,
     string_agg(DISTINCT t."TipNombre", ' + '
                ORDER BY t."TipNombre")                  AS tipos_turismo,
     r."RutDescripcion"                                   AS descripcion_ruta,
@@ -48,6 +51,7 @@ LEFT JOIN zona_tipo_turismo zt ON zt."ZtiIdZonaTuristica" = z."ZonIdZona"
 LEFT JOIN tipo_turismo t   ON t."TipIdTipoTurismo" = zt."ZtiIdTipoTurismo"
 LEFT JOIN ruta_peatonal r  ON r."RutIdZonaDestino" = z."ZonIdZona"
 GROUP BY z."ZonIdZona", z."ZonNombre", e."EstNombre", e."EstCiudad",
+         z."ZonLatitud", z."ZonLongitud",
          r."RutDescripcion", r."RutDistanciaKm", r."RutTiempoEstimadoMin", r."RutDificultad",
          z."ZonCostoAprox", z."ZonCupoMaximoDiario", z."ZonEstado";
 
@@ -340,6 +344,42 @@ BEGIN
     UNION ALL SELECT 'informe_planificacion', COUNT(*) FROM informe_planificacion
     UNION ALL SELECT 'control_aforo',     COUNT(*) FROM control_aforo
     UNION ALL SELECT 'auditoria_log',     COUNT(*) FROM auditoria_log;
+END;
+$$ LANGUAGE plpgsql;
+
+-- ----------------------------------------------------------------------------
+-- fn_verificar_rutas()
+-- Contrasta la distancia registrada en ruta_peatonal contra el calculo
+-- Haversine (estacion de origen -> zona, x2) que hace RutaPeatonalService
+-- (seccion 5.1). Sirve para detectar rutas cuyos valores quedaron
+-- desalineados de las coordenadas tras una edicion manual.
+--   SELECT * FROM fn_verificar_rutas() WHERE estado <> 'OK';
+-- ----------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION fn_verificar_rutas()
+RETURNS TABLE (
+    ruta            VARCHAR,
+    km_registrados  NUMERIC,
+    km_haversine    NUMERIC,
+    diferencia_km   NUMERIC,
+    estado          TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT r."RutNombre",
+           r."RutDistanciaKm",
+           ROUND(2 * fn_distancia_haversine(e."EstLatitud", e."EstLongitud",
+                                            z."ZonLatitud", z."ZonLongitud"), 2),
+           ROUND(ABS(r."RutDistanciaKm"
+                     - 2 * fn_distancia_haversine(e."EstLatitud", e."EstLongitud",
+                                                  z."ZonLatitud", z."ZonLongitud")), 2),
+           CASE WHEN ABS(r."RutDistanciaKm"
+                         - 2 * fn_distancia_haversine(e."EstLatitud", e."EstLongitud",
+                                                      z."ZonLatitud", z."ZonLongitud")) <= 0.05
+                THEN 'OK' ELSE 'REVISAR' END
+    FROM ruta_peatonal r
+    JOIN estacion e       ON e."EstIdEstacion" = r."RutIdEstacionOrigen"
+    JOIN zona_turistica z ON z."ZonIdZona"     = r."RutIdZonaDestino"
+    ORDER BY 4 DESC;
 END;
 $$ LANGUAGE plpgsql;
 

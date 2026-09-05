@@ -19,7 +19,10 @@ public class InformeConsolidadoDTO {
     private BigDecimal probabilidadLluvia;
     private String estadoClima;
     private BigDecimal tarifaTren;
+    private BigDecimal costoZona;
     private BigDecimal totalEstimado;
+    /** Cupo restante de la zona para la fecha; null si la zona no controla aforo (RF-16). */
+    private Integer cupoDisponible;
 
     public String getCodigo() {
         return codigo;
@@ -99,6 +102,22 @@ public class InformeConsolidadoDTO {
 
     public void setTarifaTren(BigDecimal tarifaTren) {
         this.tarifaTren = tarifaTren;
+    }
+
+    public BigDecimal getCostoZona() {
+        return costoZona;
+    }
+
+    public void setCostoZona(BigDecimal costoZona) {
+        this.costoZona = costoZona;
+    }
+
+    public Integer getCupoDisponible() {
+        return cupoDisponible;
+    }
+
+    public void setCupoDisponible(Integer cupoDisponible) {
+        this.cupoDisponible = cupoDisponible;
     }
 
     public BigDecimal getTotalEstimado() {

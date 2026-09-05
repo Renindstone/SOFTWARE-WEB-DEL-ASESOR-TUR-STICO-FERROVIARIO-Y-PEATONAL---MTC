@@ -1,0 +1,6 @@
+target/
+bin/
+.git/
+.mvn/wrapper/maven-wrapper.jar
+docs/
+*.md

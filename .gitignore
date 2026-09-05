@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Artefactos compilados (Eclipse/STS)
+bin/

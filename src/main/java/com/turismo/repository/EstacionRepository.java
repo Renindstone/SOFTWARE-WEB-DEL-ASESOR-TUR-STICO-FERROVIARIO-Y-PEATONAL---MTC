@@ -7,5 +7,10 @@ import java.util.Optional;
 
 public interface EstacionRepository extends JpaRepository<Estacion, Integer> {
     Optional<Estacion> findByCodigo(String codigo);
+
     List<Estacion> findByEstado(String estado);
+
+    List<Estacion> findByEstadoOrderByNombreAsc(String estado);
+
+    List<Estacion> findAllByOrderByNombreAsc();
 }

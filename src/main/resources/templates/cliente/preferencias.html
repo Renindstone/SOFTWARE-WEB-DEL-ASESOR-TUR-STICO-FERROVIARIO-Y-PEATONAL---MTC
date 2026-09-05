@@ -1,85 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Preferencias - MTC</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" th:href="@{/css/estilos.css}">
 
-  <style>
-    body{
-      font-family:'Manrope', system-ui, sans-serif;
-      background:#F6F4EF;
-    }
+<head th:replace="~{layout/base :: head('Preferencias del turista')}"></head>
 
-    .page-title{ color:#14453D; letter-spacing:-0.01em; }
-    .page-sub{ color:#6B7568; }
-
-    .pref-card{
-      border:none;
-      border-radius:16px;
-      border-top:4px solid #C89B3C;
-      box-shadow:0 14px 32px -14px rgba(20,69,61,.22);
-    }
-
-    .section-label{
-      font-weight:700;
-      color:#14453D;
-      font-size:.95rem;
-      margin-bottom:.75rem;
-      display:flex;
-      align-items:center;
-      gap:.5rem;
-    }
-    .section-label i{ color:#C89B3C; }
-
-    .form-select, .form-control{
-      border:1.5px solid #DEDCD2;
-      border-radius:9px;
-      padding-block:.6rem;
-    }
-    .form-select:focus, .form-control:focus{
-      border-color:#14453D;
-      box-shadow:0 0 0 3px rgba(20,69,61,.10);
-    }
-
-    .tipo-check{
-      border:1.5px solid #DEDCD2;
-      border-radius:10px;
-      padding:.65rem .9rem;
-      display:flex;
-      align-items:center;
-      gap:.6rem;
-      cursor:pointer;
-      transition:border-color .15s ease, background .15s ease;
-    }
-    .tipo-check:hover{ border-color:#C89B3C; background:#FBF8F1; }
-    .tipo-check input:checked ~ label{ color:#14453D; font-weight:600; }
-    .tipo-check input{ margin:0; }
-    .tipo-check label{ margin:0; cursor:pointer; }
-
-    .form-check-input:checked{
-      background-color:#14453D;
-      border-color:#14453D;
-    }
-
-    .btn-mtc{
-      background:#14453D;
-      color:#fff;
-      border:none;
-      border-radius:9px;
-      font-weight:700;
-      padding:.7rem 1.75rem;
-      transition:background .15s ease;
-    }
-    .btn-mtc:hover{ background:#0D302A; color:#fff; }
-
-    .divider-soft{ border-top:1px solid #E5E2D8; margin:1.75rem 0; }
-  </style>
-</head>
 <body>
 <div th:replace="~{layout/nav :: nav}"></div>
 
@@ -94,25 +17,42 @@
     <div class="card-body p-4 p-md-5">
       <form method="post" th:action="@{/preferencias}" th:object="${preferencia}">
 
+        <!-- CN-01/CN-05: errores de validacion del PreferenciaDTO. #fields solo
+             resuelve dentro del elemento que declara th:object. -->
+        <div class="alert alert-warning" th:if="${#fields.hasAnyErrors()}" role="alert">
+          <ul class="mb-0 ps-3">
+            <li th:each="error : ${#fields.allErrors()}" th:text="${error}"></li>
+          </ul>
+        </div>
+
+        <!-- RF-02: el selector solo lista estaciones activas (CN-02). -->
         <div class="mb-4">
           <div class="section-label"><i class="bi bi-train-front"></i> Estación ferroviaria de partida</div>
-          <select class="form-select" th:field="*{idEstacionOrigen}">
-            <option th:each="est : ${estaciones}" th:value="${est.Id}" th:text="${est.Nombre}"></option>
+          <select class="form-select" th:field="*{idEstacionOrigen}" required>
+            <option value="">Selecciona tu estación de partida</option>
+            <option th:each="est : ${estaciones}" th:value="${est.id}"
+                    th:text="${est.nombre} + ' (' + ${est.ciudad} + ')'"></option>
           </select>
         </div>
 
         <div class="divider-soft"></div>
 
+        <!-- RNF-06: los tipos vienen de la tabla parametrica tipo_turismo. -->
         <div class="mb-4">
           <div class="section-label"><i class="bi bi-compass"></i> Tipo de turismo</div>
           <div class="row g-2">
-            <div class="col-12 col-sm-4" th:each="tipo : ${T(java.util.List).of('Aventura','Naturaleza','Cultural/Histórico')}">
-              <div class="tipo-check">
-                <input class="form-check-input" type="checkbox" name="idsTipoTurismo" th:id="${'tipo-' + tipo}">
-                <label class="form-check-label" th:for="${'tipo-' + tipo}" th:text="${tipo}"></label>
+            <div class="col-12 col-sm-6" th:each="tipo : ${tipos}">
+              <div class="tipo-check form-check">
+                <input class="form-check-input" type="checkbox" name="idsTipoTurismo"
+                       th:id="${'tipo-' + tipo.id}" th:value="${tipo.id}"
+                       th:checked="${preferencia.idsTipoTurismo != null
+                                    and #lists.contains(preferencia.idsTipoTurismo, tipo.id)}">
+                <label class="form-check-label" th:for="${'tipo-' + tipo.id}"
+                       th:text="${tipo.nombre}" th:title="${tipo.descripcion}"></label>
               </div>
             </div>
           </div>
+          <div class="form-text">Puedes marcar más de una categoría.</div>
         </div>
 
         <div class="divider-soft"></div>
@@ -121,17 +61,20 @@
           <div class="col-12 col-sm-6">
             <div class="section-label"><i class="bi bi-clock-history"></i> Tiempo disponible</div>
             <div class="input-group">
-              <input type="number" class="form-control" th:field="*{tiempoDisponibleMin}" placeholder="Minutos">
+              <input type="number" min="1" class="form-control" th:field="*{tiempoDisponibleMin}"
+                     placeholder="Minutos" required>
               <span class="input-group-text bg-white">min</span>
             </div>
+            <div class="form-text">Ida y vuelta caminando desde la estación.</div>
           </div>
           <div class="col-12 col-sm-6">
-            <div class="section-label"><i class="bi bi-bar-chart-steps"></i> Dificultad</div>
-            <select class="form-select" th:field="*{dificultad}">
+            <div class="section-label"><i class="bi bi-bar-chart-steps"></i> Dificultad máxima</div>
+            <select class="form-select" th:field="*{dificultad}" required>
               <option value="Baja">Baja</option>
               <option value="Media">Media</option>
               <option value="Alta">Alta</option>
             </select>
+            <div class="form-text">Se muestran las rutas de esa dificultad o menor.</div>
           </div>
         </div>
 
@@ -145,5 +88,8 @@
 </main>
 
 <div th:replace="~{layout/footer :: footer}"></div>
+<div th:replace="~{layout/base :: scripts}"></div>
+<script th:src="@{/js/preferencias.js}"></script>
 </body>
+
 </html>

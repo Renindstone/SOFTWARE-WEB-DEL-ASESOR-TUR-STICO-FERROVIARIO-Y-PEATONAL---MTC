@@ -1,23 +1,245 @@
-/* Estilos base del Asesor Turistico Ferroviario y Peatonal (MTC). */
-/* RNF-02: complementa Bootstrap 5 para el uso responsive desde smartphones y tablets. */
+/* ==========================================================================
+   Asesor Turistico Ferroviario y Peatonal (MTC)
+   Estilos compartidos por las vistas Thymeleaf.
 
-body {
-  background-color: #f8f9fa;
+   RNF-02 (Usabilidad y Portabilidad): complementa Bootstrap 5 para el uso
+   responsive desde smartphones y tablets. Las clases de este archivo son las
+   que usan las plantillas que incluyen ~{layout/base :: head(...)}; las
+   pantallas de administracion que traen su propio bloque <style> lo
+   sobrescriben localmente.
+   ========================================================================== */
+
+:root {
+  --mtc-verde: #14453D;
+  --mtc-verde-oscuro: #0D302A;
+  --mtc-dorado: #C89B3C;
+  --mtc-crema: #F6F4EF;
+  --mtc-borde: #DEDCD2;
+  --mtc-texto-suave: #6B7568;
 }
 
+body {
+  font-family: 'Manrope', system-ui, -apple-system, "Segoe UI", sans-serif;
+  background-color: var(--mtc-crema);
+}
+
+/* --------------------------------------------------------------- Titulos */
+.page-title {
+  color: var(--mtc-verde);
+  letter-spacing: -0.01em;
+}
+
+.page-sub {
+  color: var(--mtc-texto-suave);
+}
+
+.section-label,
+.section-title {
+  font-weight: 700;
+  color: var(--mtc-verde);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.section-label i,
+.section-title i {
+  color: var(--mtc-dorado);
+}
+
+/* --------------------------------------------------------------- Tarjetas */
+.section-card,
+.pref-card {
+  border: none;
+  border-radius: 16px;
+  border-top: 4px solid var(--mtc-dorado);
+  box-shadow: 0 14px 32px -14px rgba(20, 69, 61, 0.20);
+}
+
+.divider-soft {
+  border-top: 1px solid #E5E2D8;
+  margin: 1.25rem 0;
+}
+
+.readonly-note {
+  background: #FBF8F1;
+  border: 1px solid #EAD9AE;
+  color: #A67C2E;
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ---------------------------------------------------------------- Botones */
+.btn-mtc {
+  background: var(--mtc-verde);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-weight: 700;
+  padding: 0.6rem 1.6rem;
+}
+
+.btn-mtc:hover,
+.btn-mtc:focus {
+  background: var(--mtc-verde-oscuro);
+  color: #fff;
+}
+
+.btn-mtc-outline {
+  border: 1.5px solid var(--mtc-verde);
+  color: var(--mtc-verde);
+  border-radius: 9px;
+  font-weight: 600;
+  background: #fff;
+}
+
+.btn-mtc-outline:hover {
+  background: var(--mtc-verde);
+  color: #fff;
+}
+
+/* ----------------------------------------------------------- Formularios */
+.form-select:focus,
+.form-control:focus {
+  border-color: var(--mtc-verde);
+  box-shadow: 0 0 0 3px rgba(20, 69, 61, 0.10);
+}
+
+.tipo-check {
+  border: 1.5px solid var(--mtc-borde);
+  border-radius: 9px;
+  padding: 0.6rem 0.75rem 0.6rem 2.25rem;
+  background: #fff;
+}
+
+/* --------------------------------------------------------------- Tablas */
+.table-mtc thead {
+  background: var(--mtc-verde);
+  color: #fff;
+}
+
+.table-mtc thead th {
+  font-weight: 600;
+  font-size: 0.82rem;
+  border: none;
+  white-space: nowrap;
+}
+
+.table-mtc tbody td {
+  vertical-align: middle;
+  font-size: 0.88rem;
+}
+
+.table-mtc tbody tr:hover {
+  background: #FBF8F1;
+}
+
+/* -------------------------------------------------------------- Insignias */
+.badge-activa,
+.badge-dif-baja {
+  background: #E4F2E9;
+  color: #1F6B45;
+}
+
+.badge-inactiva,
+.badge-dif-alta {
+  background: #FBE8E6;
+  color: #B3382C;
+}
+
+.badge-pendiente,
+.badge-mantenimiento,
+.badge-dif-media {
+  background: #FBF1DD;
+  color: #A67C2E;
+}
+
+.cost-pill,
+.fare-pill {
+  background: #E4F2E9;
+  color: #1F6B45;
+  font-weight: 700;
+  border-radius: 20px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+  display: inline-block;
+}
+
+.code-pill {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  background: #F0EEE6;
+  color: #4A5348;
+  border-radius: 6px;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+.tipo-pill {
+  background: #F0EEE6;
+  color: #4A5348;
+  border-radius: 20px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.75rem;
+  display: inline-block;
+}
+
+.est-name,
+.zona-name,
+.route-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: var(--mtc-verde);
+}
+
+.est-name i,
+.zona-name i,
+.route-cell i {
+  color: var(--mtc-dorado);
+}
+
+/* ----------------------------------------------------------------- Mapa */
 #mapa-ruta,
 [id^="mapa-"] {
   border-radius: 0.5rem;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--mtc-borde);
+  min-height: 320px;
 }
 
-.navbar-brand img {
-  vertical-align: middle;
+.leaflet-container {
+  border-radius: 0.5rem;
 }
 
+/* ------------------------------------------------------------ Responsive */
 @media (max-width: 576px) {
   .container {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+
+  .table-mtc tbody td,
+  .table-mtc thead th {
+    font-size: 0.8rem;
+  }
+}
+
+/* ------------------------------------------------- Impresion del informe */
+@media print {
+
+  nav,
+  footer,
+  .d-print-none {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
   }
 }

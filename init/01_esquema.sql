@@ -94,15 +94,26 @@ CREATE TABLE servicio_tren (
 -- ----------------------------------------------------------------------------
 -- 6. ZONA_TURISTICA  (fuente Travel Group Peru)
 --
--- NOTA: la columna "ZonIdTipoTurismo" fue retirada de esta tabla. La
+-- NOTA 1: la columna "ZonIdTipoTurismo" fue retirada de esta tabla. La
 -- categorizacion turistica pasa a resolverse mediante la tabla intermedia
 -- zona_tipo_turismo (punto 7), ya que una misma zona puede pertenecer a mas
 -- de una categoria a la vez (relacion N:M).
+--
+-- NOTA 2: "ZonLatitud"/"ZonLongitud" son la ubicacion propia del punto de
+-- interes. La seccion 5.1 del documento define que RutaPeatonalService calcula
+-- la distancia "a partir de las coordenadas de ambos puntos" (estacion y zona)
+-- con la formula de Haversine, y que el mapa Leaflet dibuja la estacion de
+-- origen Y la zona de destino; sin estas dos columnas la unica coordenada
+-- disponible para la zona seria la de su estacion cercana, con lo que toda
+-- ruta partiendo de esa misma estacion daria distancia cero. El diccionario de
+-- datos (6.4) las omite: se documentan aqui como complemento necesario.
 -- ----------------------------------------------------------------------------
 CREATE TABLE zona_turistica (
     "ZonIdZona"             INTEGER GENERATED ALWAYS AS IDENTITY,
     "ZonNombre"             VARCHAR(100)   NOT NULL,
     "ZonDescripcion"        VARCHAR(500)   NULL,
+    "ZonLatitud"            NUMERIC(9,6)   NOT NULL,
+    "ZonLongitud"           NUMERIC(9,6)   NOT NULL,
     "ZonIdEstacionCercana"  INTEGER        NOT NULL,
     "ZonCostoAprox"         NUMERIC(7,2)   NULL,
     "ZonCupoMaximoDiario"   INTEGER        NULL,
@@ -112,7 +123,9 @@ CREATE TABLE zona_turistica (
         REFERENCES estacion ("EstIdEstacion") ON DELETE RESTRICT,
     CONSTRAINT ck_zona_estado       CHECK ("ZonEstado" IN ('Activa', 'Inactiva')),
     CONSTRAINT ck_zona_cupo         CHECK ("ZonCupoMaximoDiario" IS NULL
-                                           OR "ZonCupoMaximoDiario" > 0)
+                                           OR "ZonCupoMaximoDiario" > 0),
+    CONSTRAINT ck_zona_latitud      CHECK ("ZonLatitud"  BETWEEN -90  AND 90),
+    CONSTRAINT ck_zona_longitud     CHECK ("ZonLongitud" BETWEEN -180 AND 180)
 );
  
 -- ----------------------------------------------------------------------------

@@ -84,6 +84,15 @@
 			<version>2.0.5</version>
 		</dependency>
 		<dependency>
+			<!-- Solo para pruebas: permite levantar el contexto de Spring y
+			     ejecutar la matriz de caja blanca (seccion 8.2.1) sin exigir
+			     el contenedor PostgreSQL. En ejecucion real el motor sigue
+			     siendo PostgreSQL 15 (arquitectura, seccion 5). -->
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator-test</artifactId>
 			<scope>test</scope>

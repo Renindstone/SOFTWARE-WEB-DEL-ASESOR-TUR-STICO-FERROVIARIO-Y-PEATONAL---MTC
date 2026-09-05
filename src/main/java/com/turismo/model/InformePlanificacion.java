@@ -25,13 +25,14 @@ public class InformePlanificacion {
     private String codigo;
 
     @Column(name = "InfFechaEmision", nullable = false)
-    private LocalDateTime fechaEmision;
+    private LocalDateTime fechaEmision = LocalDateTime.now();
 
     @Column(name = "InfFechaVisita", nullable = false)
     private LocalDate fechaVisita;
 
+    /** NULL cuando la consulta fue anonima (diccionario de datos 6.4). */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "InfIdUsuario", nullable = false)
+    @JoinColumn(name = "InfIdUsuario")
     private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)

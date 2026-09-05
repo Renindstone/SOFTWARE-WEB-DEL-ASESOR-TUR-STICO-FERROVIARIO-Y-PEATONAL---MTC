@@ -5,20 +5,21 @@ import com.turismo.security.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * Seguridad por roles (HURF06): ADMIN_MTC, TRAVEL_GROUP_USER, PERURAIL_ADMIN,
- * TURISTA_PUBLICO.
- * Modulo de administracion restringido; panel del turista y consulta de
- * zonas/estaciones abiertos a TURISTA_PUBLICO; CRUD de zonas y consulta de
- * estaciones restringidos a TRAVEL_GROUP_USER; auditoria restringida a
- * ADMIN_MTC; mantenimiento de horarios/precios de PeruRail (RF-12)
- * restringido a ADMIN_MTC y PERURAIL_ADMIN.
+ * Seguridad por roles (HURF06 / RNF-05): ADMIN_MTC, TRAVEL_GROUP_USER,
+ * PERURAIL_ADMIN, TURISTA_PUBLICO.
+ *
+ * El panel del turista (preferencias, zonas, ruta e informe) es publico: el
+ * caso "Zonas turisticas" del MTC contempla la consulta anonima, y por eso
+ * InfIdUsuario admite NULL en el diccionario de datos (6.4). El modulo de
+ * administracion queda restringido: CRUD de zonas y consulta de estaciones
+ * para TRAVEL_GROUP_USER, horarios y tarifas (RF-12) para PERURAIL_ADMIN y
+ * auditoria (RF-15) para ADMIN_MTC; ADMIN_MTC entra a los tres.
  */
 @Configuration
 public class SecurityConfig {
@@ -42,18 +43,31 @@ public class SecurityConfig {
         http
                 .userDetailsService(customUserDetailsService)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/css/**", "/js/**", "/img/**", "/preferencias/**").permitAll()
+                        // Recursos estaticos y pantallas de acceso.
+                        .requestMatchers("/", "/login", "/acceso-denegado", "/error",
+                                "/css/**", "/js/**", "/img/**", "/favicon.ico").permitAll()
+                        // Sonda de vida del contenedor (healthcheck de docker-compose).
+                        .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
+                        // Modulo cliente / usuario final (RF-01 a RF-08, CU-01 a CU-03, CU-08).
+                        .requestMatchers("/preferencias/**", "/estaciones/seleccion",
+                                "/rutas/**", "/informes/**").permitAll()
+                        // Modulo de administracion (RNF-05).
                         .requestMatchers("/auditoria/**").hasRole("ADMIN_MTC")
                         .requestMatchers("/servicios-tren/**").hasAnyRole("ADMIN_MTC", "PERURAIL_ADMIN")
                         .requestMatchers("/zonas/**").hasAnyRole("ADMIN_MTC", "TRAVEL_GROUP_USER")
                         .requestMatchers("/estaciones/**").hasAnyRole("ADMIN_MTC", "TRAVEL_GROUP_USER")
-                        .requestMatchers("/**").hasRole("ADMIN_MTC")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/", true)
                         .permitAll())
-                .logout(AbstractHttpConfigurer::disable)
+                .logout(logout -> logout
+                        // POST /logout con token CSRF: el enlace "Salir" del nav es un formulario.
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll())
                 .exceptionHandling(handling -> handling.accessDeniedHandler(accesoDenegadoHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 

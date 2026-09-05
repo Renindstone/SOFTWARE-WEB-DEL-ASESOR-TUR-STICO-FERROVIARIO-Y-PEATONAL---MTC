@@ -1,9 +1,12 @@
 # ============================================================
 # Proyecto : Asesor Turistico Ferroviario y Peatonal - MTC
 # Curso    : Ingenieria de Software - UNU
-# Contenedor de base de datos PostgreSQL 15
-# Puerto no estandar 5440 para evitar conflictos con otras
-# instancias de PostgreSQL del entorno de desarrollo.
+#
+# Arquitectura fisica (seccion 5.2 del documento):
+#   - Contenedor de base de datos PostgreSQL 15, puerto 5440.
+#   - Contenedor de aplicacion Spring Boot 4.1.1, puerto 8082.
+# Ambos puertos son no estandar, para evitar conflictos con otros
+# servicios del entorno de desarrollo.
 # ============================================================
 
 services:
@@ -19,7 +22,11 @@ services:
     ports:
       - "5440:5432"
     volumes:
+      # Volumen persistente: los datos sobreviven al reinicio del contenedor.
       - mtc_pgdata:/var/lib/postgresql/data
+      # Carga automatica del esquema, los datos iniciales y las vistas.
+      # El entrypoint de Postgres solo ejecuta estos scripts la primera vez
+      # que crea el volumen: para recargarlos, `docker compose down -v`.
       - ./init:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U admin_mtc -d bd_asesor_turistico"]
@@ -31,22 +38,32 @@ services:
 
   # ----------------------------------------------------------
   # Contenedor de aplicacion (Sprint 4 - despliegue).
-  # Descomentar cuando el proyecto Spring Boot tenga Dockerfile.
+  # Espera a que Postgres pase su healthcheck antes de arrancar,
+  # porque el perfil docker valida el esquema al iniciar.
   # ----------------------------------------------------------
-  # app-mtc:
-  #   build: .
-  #   container_name: app-mtc-turismo
-  #   depends_on:
-  #     postgres-mtc:
-  #       condition: service_healthy
-  #   environment:
-  #     SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-mtc:5432/bd_asesor_turistico
-  #     SPRING_DATASOURCE_USERNAME: admin_mtc
-  #     SPRING_DATASOURCE_PASSWORD: mtc2026
-  #   ports:
-  #     - "8082:8082"
-  #   networks:
-  #     - red-mtc
+  app-mtc:
+    build: .
+    container_name: app-mtc-turismo
+    restart: unless-stopped
+    depends_on:
+      postgres-mtc:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-mtc:5432/bd_asesor_turistico
+      SPRING_DATASOURCE_USERNAME: admin_mtc
+      SPRING_DATASOURCE_PASSWORD: mtc2026
+      TZ: America/Lima
+    ports:
+      - "8082:8082"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8082/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    networks:
+      - red-mtc
 
 volumes:
   mtc_pgdata:

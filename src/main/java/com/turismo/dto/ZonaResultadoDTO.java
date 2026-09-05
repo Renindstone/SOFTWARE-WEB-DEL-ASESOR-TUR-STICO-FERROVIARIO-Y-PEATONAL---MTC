@@ -16,6 +16,10 @@ public class ZonaResultadoDTO {
     private BigDecimal costoAproximado;
     private Integer cupoMaximoDiario;
     private Integer idEstacionCercana;
+    private BigDecimal latitud;
+    private BigDecimal longitud;
+    /** Circuito de ida y vuelta ya calculado para esta zona (RF-04/RF-05). */
+    private RutaCalculadaDTO ruta;
 
     public Integer getIdZona() {
         return idZona;
@@ -71,5 +75,29 @@ public class ZonaResultadoDTO {
 
     public void setIdEstacionCercana(Integer idEstacionCercana) {
         this.idEstacionCercana = idEstacionCercana;
+    }
+
+    public BigDecimal getLatitud() {
+        return latitud;
+    }
+
+    public void setLatitud(BigDecimal latitud) {
+        this.latitud = latitud;
+    }
+
+    public BigDecimal getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(BigDecimal longitud) {
+        this.longitud = longitud;
+    }
+
+    public RutaCalculadaDTO getRuta() {
+        return ruta;
+    }
+
+    public void setRuta(RutaCalculadaDTO ruta) {
+        this.ruta = ruta;
     }
 }
