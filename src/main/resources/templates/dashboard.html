@@ -46,7 +46,8 @@
         </div>
       </div>
     </div>
-    <div class="col-6 col-md-3">
+    <!-- RNF-05: la trazabilidad es competencia del MTC, no del resto del personal. -->
+    <div class="col-6 col-md-3" sec:authorize="hasRole('ADMIN_MTC')">
       <div class="card section-card h-100 text-center">
         <div class="card-body">
           <i class="bi bi-journal-check fs-3" style="color:#C89B3C;"></i>
@@ -64,11 +65,6 @@
           <h2 class="h6 section-title mb-3"><i class="bi bi-grid"></i> Accesos rápidos</h2>
 
           <div class="d-flex flex-column gap-2">
-            <a th:href="@{/preferencias}" class="btn btn-mtc-outline text-start">
-              <i class="bi bi-person-walking me-2"></i>
-              <strong>Turista</strong> — registrar preferencias de viaje
-            </a>
-
             <a th:href="@{/zonas}" class="btn btn-mtc-outline text-start"
                sec:authorize="hasAnyRole('ADMIN_MTC','TRAVEL_GROUP_USER')">
               <i class="bi bi-map me-2"></i>

@@ -8,6 +8,7 @@ import com.turismo.repository.EstacionRepository;
 import com.turismo.service.ClimaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -34,6 +35,10 @@ public class SenamhiClient {
     private final ClimaService climaService;
     private final EstacionRepository estacionRepository;
 
+    /** Dias de pronostico que se piden al servicio en cada sincronizacion. */
+    @Value("${integracion.senamhi.dias-pronostico:7}")
+    private int diasPronostico;
+
     public SenamhiClient(RestClient senamhiRestClient,
                           ClimaService climaService,
                           EstacionRepository estacionRepository) {
@@ -42,11 +47,18 @@ public class SenamhiClient {
         this.estacionRepository = estacionRepository;
     }
 
-    /** Obtiene el pronostico diario publicado por SENAMHI para todas las estaciones. */
+    /**
+     * Obtiene el pronostico publicado por SENAMHI para todas las estaciones,
+     * desde hoy y por los proximos dias-pronostico dias. Traer varios dias de
+     * una vez permite que el turista consulte una fecha de visita futura
+     * (CU-03) sin depender de que la tarea programada corra ese mismo dia.
+     */
     public List<PrevisionClimaSenamhiDTO> obtenerPrevisiones() {
         try {
             List<PrevisionClimaSenamhiDTO> previsiones = senamhiRestClient.get()
-                    .uri("/previsiones")
+                    .uri(uriBuilder -> uriBuilder.path("/previsiones")
+                            .queryParam("dias", diasPronostico)
+                            .build())
                     .retrieve()
                     .body(new ParameterizedTypeReference<List<PrevisionClimaSenamhiDTO>>() {
                     });

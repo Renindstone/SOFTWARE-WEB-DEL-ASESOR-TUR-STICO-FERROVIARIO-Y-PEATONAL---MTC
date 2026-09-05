@@ -48,6 +48,9 @@ public class SecurityConfig {
                                 "/css/**", "/js/**", "/img/**", "/favicon.ico").permitAll()
                         // Sonda de vida del contenedor (healthcheck de docker-compose).
                         .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
+                        // Mocks de los servicios externos (Sprint 0). SenamhiClient los
+                        // consume por HTTP como si fueran el servicio real, sin credenciales.
+                        .requestMatchers("/mock/**").permitAll()
                         // Modulo cliente / usuario final (RF-01 a RF-08, CU-01 a CU-03, CU-08).
                         .requestMatchers("/preferencias/**", "/estaciones/seleccion",
                                 "/rutas/**", "/informes/**").permitAll()
